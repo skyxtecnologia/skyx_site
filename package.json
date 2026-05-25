@@ -1,0 +1,21 @@
+{
+  "name": "skyx",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm -w apps/web run dev",
+    "build": "npm -w apps/web run build",
+    "start": "npm -w apps/web run start",
+    "lint": "biome check .",
+    "lint:fix": "biome check . --fix",
+    "format": "biome format . --write",
+    "type-check": "npm -w apps/web run type-check"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.6.0"
+  }
+}

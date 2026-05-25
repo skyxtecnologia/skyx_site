@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: skyx-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: skyx
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - skyx_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  skyx_postgres_data:
