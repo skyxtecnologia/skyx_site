@@ -17,5 +17,9 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.6.0"
+  },
+  "overrides": {
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
   }
 }
