@@ -179,7 +179,8 @@ export function AboutSection({ lang = 'PT' }: AboutSectionProps) {
 
   const fadeVariants = {
     hidden: { opacity: 0, scale: 0.98 },
-    transition: { duration: 0.2, ease: 'easeOut' as import('framer-motion').Easing },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.2, ease: 'easeOut' } },
+    exit: { opacity: 0, scale: 0.98, transition: { duration: 0.2, ease: 'easeIn' } },
   };
 
   return (
@@ -248,10 +249,7 @@ export function AboutSection({ lang = 'PT' }: AboutSectionProps) {
                         initial={{ opacity: 0, height: 0, y: 20 }}
                         animate={{ opacity: 1, height: 'auto', y: 0 }}
                         exit={{ opacity: 0, height: 0, y: -20 }}
-                        transition={{
-                          duration: 0.3,
-                          ease: 'easeOut' as import('framer-motion').Easing,
-                        }}
+                        transition={{ duration: 0.3, ease: 'easeOut' }}
                         className="overflow-hidden max-w-3xl"
                       >
                         <p
@@ -295,11 +293,7 @@ export function AboutSection({ lang = 'PT' }: AboutSectionProps) {
                       key={value.title}
                       initial={{ opacity: 0, scale: 0.9, y: 20 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
-                      transition={{
-                        delay: idx * 0.1,
-                        duration: 0.4,
-                        ease: 'easeOut' as import('framer-motion').Easing,
-                      }}
+                      transition={{ delay: idx * 0.1, duration: 0.4, ease: 'easeOut' }}
                       whileHover={{ scale: 1.03, y: -5 }}
                       className="p-6 md:p-8 rounded-2xl flex flex-col justify-center items-center relative overflow-hidden group shadow-lg"
                       style={{

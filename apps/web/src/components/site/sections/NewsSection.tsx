@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { type Variants, motion } from 'framer-motion';
 import Image from 'next/image';
 
 const translations = {
@@ -34,7 +34,7 @@ export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
   }));
 
   // Animação do contêiner para o efeito cascata
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -43,7 +43,7 @@ export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
   };
 
   // Animação individual dos cards vindo de baixo
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
   };
