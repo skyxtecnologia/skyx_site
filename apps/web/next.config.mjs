@@ -1,4 +1,5 @@
 import { createRequire } from 'module';
+import path from 'path';
 const require = createRequire(import.meta.url);
 
 /** @type {import('next').NextConfig} */
@@ -9,8 +10,10 @@ const nextConfig = {
   },
   // 2. Força o Webpack a resolver o React em apenas um único lugar
   webpack: (config) => {
-    config.resolve.alias['react'] = require.resolve('react');
-    config.resolve.alias['react-dom'] = require.resolve('react-dom');
+    // Usamos o path.dirname para mapear a pasta raiz do pacote, 
+    // garantindo que sub-caminhos como 'react/jsx-runtime' funcionem.
+    config.resolve.alias['react'] = path.dirname(require.resolve('react'));
+    config.resolve.alias['react-dom'] = path.dirname(require.resolve('react-dom'));
     return config;
   },
 };
