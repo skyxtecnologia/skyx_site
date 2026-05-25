@@ -1,0 +1,31 @@
+{
+  "name": "api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --loader ts-node/esm src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "type-check": "tsc --noEmit",
+    "lint": "biome check .",
+    "db:generate": "prisma generate --schema prisma/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema prisma/schema.prisma"
+  },
+  "dependencies": {
+    "@prisma/client": "5.10.1",
+    "better-auth": "^1.6.11",
+    "dotenv": "16.4.5",
+    "cors": "2.8.5",
+    "express": "4.21.0",
+    "zod": "3.24.1"
+  },
+  "devDependencies": {
+    "@types/cors": "2.8.17",
+    "@types/express": "4.17.21",
+    "@types/node": "20.14.2",
+    "prisma": "5.10.1",
+    "ts-node": "10.9.2",
+    "typescript": "5.5.2"
+  }
+}
