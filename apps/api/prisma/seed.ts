@@ -11,8 +11,15 @@ async function main() {
         update: {}, // Se já existir, não faz nada
         create: {
             email: 'admin@skyx.com',
-            passwordHash: 'senha_criptografada_aqui', // Em produção, lembre-se de usar uma hash real (ex: bcrypt)
+            name: 'Admin',
             role: 'ADMIN',
+            accounts: {
+                create: {
+                    accountId: 'admin-credential',
+                    providerId: 'credential',
+                    password: 'senha_criptografada_aqui', // Em produção, lembre-se de usar uma hash real
+                }
+            }
         },
     });
 
