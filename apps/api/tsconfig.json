@@ -17,5 +17,5 @@
     "types": ["node"]
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["src/**/*.tsx", "src/routes/page.tsx, node_modules, dist"],
 }

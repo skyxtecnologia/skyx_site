@@ -1,17 +1,31 @@
+import './config.js'; // IMPORTANTE: Carrega as variáveis de ambiente primeiro
 import { toNodeHandler } from 'better-auth/node';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import express from 'express';
-import { auth } from './lib/auth';
-import dashboardRouter from './routes/dashboard';
-
-dotenv.config();
+import { auth } from './lib/auth.js';
+import dashboardRouter from './routes/dashboard.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:3000', credentials: true }));
+// CORS dinâmico: evita mismatch de origem quando FRONTEND_URL não é exatamente a origem real usada no browser.
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      const allowed = new Set([
+        process.env.FRONTEND_URL || 'http://localhost:3000',
+        'http://localhost:3000',
+      ]);
+
+      if (!origin) return callback(null, true);
+      if (allowed.has(origin)) return callback(null, true);
+
+      return callback(null, true); // permitir mesmo assim para não bloquear cookies durante debug
+    },
+    credentials: true,
+  })
+);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -39,6 +53,8 @@ app.use((err: unknown, req: express.Request, res: express.Response, next: expres
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+app.set('trust proxy', 1);
+
+app.listen(Number(PORT), '0.0.0.0', () => {
+  console.log(`🚀 Server running on port ${PORT} (0.0.0.0)`);
 });

@@ -1,16 +1,17 @@
+version: '3.8'
+
 services:
   postgres:
     image: postgres:16-alpine
     container_name: skyx-postgres
-    restart: unless-stopped
     environment:
-      POSTGRES_DB: skyx
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: skyx_db
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
-      - skyx_postgres_data:/var/lib/postgresql/data
+      - skyx_pg_data:/var/lib/postgresql/data
 
 volumes:
-  skyx_postgres_data:
+  skyx_pg_data:

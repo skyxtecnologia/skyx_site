@@ -9,7 +9,9 @@ export function middleware(request: NextRequest) {
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route));
 
   if (isProtectedRoute) {
-    const token = request.cookies.get('auth-token');
+    const token =
+      request.cookies.get('better-auth.session_token') ||
+      request.cookies.get('__Secure-better-auth.session_token');
 
     // Se não tem token, redireciona para login
     if (!token) {
@@ -19,7 +21,9 @@ export function middleware(request: NextRequest) {
 
   // Rotas públicas após login não devem ser acessadas
   if (pathname === '/login' || pathname === '/') {
-    const token = request.cookies.get('auth-token');
+    const token =
+      request.cookies.get('better-auth.session_token') ||
+      request.cookies.get('__Secure-better-auth.session_token');
 
     // Se tem token, redireciona para dashboard
     if (token && pathname === '/login') {

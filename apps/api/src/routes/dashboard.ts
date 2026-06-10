@@ -1,58 +1,39 @@
-import { Router } from 'express';
-import prisma from '../lib/prisma';
-import { requireAuth } from '../middleware/require-auth';
+import { fromNodeHeaders } from 'better-auth/node';
+import { type Request, Router } from 'express';
+import { auth } from '../lib/auth.js';
 
 const router = Router();
 
-router.use(requireAuth);
+// Estendemos a interface de Request para que o TypeScript reconheça o usuário da sessão
+interface AuthRequest extends Request {
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+  };
+}
 
-router.get('/metrics', async (_req, res, next) => {
+router.get('/metrics', async (req: AuthRequest, res) => {
   try {
-    const [usersCount, contentCount, publishedCount, latestMetrics] = await Promise.all([
-      prisma.user.count(),
-      prisma.content.count(),
-      prisma.content.count({ where: { published: true } }),
-      prisma.metric.findMany({ orderBy: { createdAt: 'desc' }, take: 10 }),
-    ]);
+    const session = await auth.api.getSession({ headers: fromNodeHeaders(req.headers) });
 
+    if (!session?.user) {
+      return res.status(401).json({ error: 'Não autorizado: Sessão inválida.' });
+    }
+
+    // Se a sessão for válida, retornamos dados mockados para o dashboard
     res.json({
-      usersCount,
-      contentCount,
-      publishedCount,
-      latestMetrics,
+      welcomeMessage: `Bem-vindo(a) de volta, ${session.user.name}!`,
+      metrics: [
+        { id: 1, title: 'Projetos Ativos', value: '12' },
+        { id: 2, title: 'Tarefas Pendentes', value: '5' },
+        { id: 3, title: 'Satisfação do Cliente', value: '98%' },
+      ],
     });
   } catch (error) {
-    next(error);
-  }
-});
-
-router.get('/users', async (_req, res, next) => {
-  try {
-    const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        image: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-
-    res.json({ users });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.get('/content', async (_req, res, next) => {
-  try {
-    const content = await prisma.content.findMany({ orderBy: { createdAt: 'desc' } });
-    res.json({ content });
-  } catch (error) {
-    next(error);
+    // Se getSession falhar, significa que o usuário não está autenticado.
+    return res.status(401).json({ error: 'Não autorizado.' });
   }
 });
 

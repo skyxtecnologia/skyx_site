@@ -1,20 +1,31 @@
+import { PrismaClient } from '@prisma/client';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
-import prisma from './prisma';
 
-const secret = process.env.BETTER_AUTH_SECRET;
-
-if (!secret || secret.length < 32) {
-  throw new Error('BETTER_AUTH_SECRET must be set and contain at least 32 characters.');
-}
+const prisma = new PrismaClient();
 
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL ?? 'http://localhost:3001',
-  secret,
+  // Mantém Prisma, mas deixa o adapter e configurações alinhados com o esperado pelo Better Auth.
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),
+
+  // Email + password (email/password nativo)
   emailAndPassword: {
     enabled: true,
+  },
+
+  // Origem confiável do frontend.
+  // IMPORTANTE: use a URL do frontend real.
+  trustedOrigins: [process.env.FRONTEND_URL ?? 'http://localhost:3000'],
+
+  // Opcional: campos adicionais no usuário.
+  user: {
+    additionalFields: {
+      role: {
+        type: 'string',
+        defaultValue: 'user',
+      },
+    },
   },
 });
