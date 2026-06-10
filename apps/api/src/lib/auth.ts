@@ -15,6 +15,10 @@ export const auth = betterAuth({
     enabled: true,
   },
 
+  // Configurações de Host para ambientes de produção (Render)
+  baseURL: process.env.BETTER_AUTH_URL,
+  trustHost: true,
+
   // Origem confiável do frontend.
   trustedOrigins: [
     process.env.FRONTEND_URL ?? 'http://localhost:3000',

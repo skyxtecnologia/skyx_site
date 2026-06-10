@@ -8,6 +8,13 @@ import dashboardRouter from './routes/dashboard.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Debugger de Origem (Isso vai imprimir nos logs do Render a URL exata que está chegando)
+app.use('/api/auth', (req, res, next) => {
+  console.log(`[AUTH DEBUG] Recebendo requisição de: ${req.headers.origin}`);
+  console.log(`[AUTH DEBUG] FRONTEND_URL configurada no Render: ${process.env.FRONTEND_URL}`);
+  next();
+});
+
 // Middleware
 // CORS dinâmico: evita mismatch de origem quando FRONTEND_URL não é exatamente a origem real usada no browser.
 app.use(
