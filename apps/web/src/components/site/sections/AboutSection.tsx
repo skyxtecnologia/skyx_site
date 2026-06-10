@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
+import { api } from '../../../lib/api';
 
 const translations = {
   PT: {
@@ -104,6 +105,7 @@ interface AboutSectionProps {
 export function AboutSection({ lang = 'PT' }: AboutSectionProps) {
   const [currentSlide, setCurrentSlide] = useState<ContentSlide>('intro');
   const t = translations[lang];
+  const [dbPartners, setDbPartners] = useState<{ id: string; name: string; image: string }[]>([]);
 
   const introRef = useRef<HTMLDivElement>(null);
   const historyRef = useRef<HTMLDivElement>(null);
@@ -177,9 +179,29 @@ export function AboutSection({ lang = 'PT' }: AboutSectionProps) {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const fetchPartners = async () => {
+      try {
+        const res = await api.get('/api/partners');
+        if (res.data && res.data.length > 0) {
+          const featured = res.data.filter((p: { isFeatured: boolean }) => p.isFeatured);
+          setDbPartners(featured.length > 0 ? featured : res.data);
+        }
+      } catch (err) {
+        console.error('Erro ao buscar parceiros:', err);
+      }
+    };
+    fetchPartners();
+  }, []);
+
+  const displayPartners = dbPartners.length > 0
+    ? dbPartners.map((p) => ({ name: p.name, src: p.image, width: 200, height: 110 }))
+    : partners;
+
   const fadeVariants = {
     hidden: { opacity: 0, scale: 0.98 },
-    transition: { duration: 0.2, ease: 'easeOut' as import('framer-motion').Easing },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.2, ease: 'easeOut' as import('framer-motion').Easing } },
+    exit: { opacity: 0, scale: 0.98, transition: { duration: 0.2, ease: 'easeIn' as import('framer-motion').Easing } },
   };
 
   return (
@@ -359,7 +381,7 @@ export function AboutSection({ lang = 'PT' }: AboutSectionProps) {
                 </h3>
 
                 <div className="flex flex-wrap justify-center gap-8 items-center">
-                  {partners.map((partner) => (
+                  {displayPartners.map((partner) => (
                     <motion.div
                       key={partner.name}
                       initial={{ opacity: 0, scale: 0.9 }}

@@ -4,6 +4,10 @@ import cors from 'cors';
 import express from 'express';
 import { auth } from './lib/auth.js';
 import dashboardRouter from './routes/dashboard.js';
+import casesRouter from './routes/cases.js';
+import newsRouter from './routes/news.js';
+import partnersRouter from './routes/partners.js';
+import contactRouter from './routes/contact.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -46,6 +50,10 @@ app.all('/api/auth/*', toNodeHandler(auth));
 app.use(express.json());
 
 app.use('/api/dashboard', dashboardRouter);
+app.use('/api/cases', casesRouter);
+app.use('/api/news', newsRouter);
+app.use('/api/partners', partnersRouter);
+app.use('/api/contact', contactRouter);
 
 // Error handler
 app.use((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => {

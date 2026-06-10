@@ -2,19 +2,19 @@
 
 import { type Variants, motion } from 'framer-motion';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { api } from '../../../lib/api';
 
 const translations = {
   PT: {
     title: 'Ultimas noticias',
-    newsTitle: 'Tecnologia que transforma',
-    newsDescription:
-      'A Sky X Tecnologia desenvolve soluções digitais sob medida, unindo inovação, tecnologia e educação para criar projetos inteligentes, modernos e de alto impacto.',
+    emptyMsg: 'Novas notícias serão publicadas em breve.',
+    loadingMsg: 'Carregando notícias...',
   },
   EN: {
     title: 'Latest news',
-    newsTitle: 'Technology that transforms',
-    newsDescription:
-      'Sky X Technology develops tailor-made digital solutions, uniting innovation, technology, and education to create smart, modern, and high-impact projects.',
+    emptyMsg: 'New articles will be published soon.',
+    loadingMsg: 'Loading news...',
   },
 } as const;
 
@@ -25,13 +25,40 @@ interface NewsSectionProps {
 export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
   const t = translations[lang];
 
-  // Array de notícias para popular o grid
-  const newsData = Array.from({ length: 6 }).map((_, index) => ({
-    id: index + 1,
-    title: t.newsTitle,
-    description: t.newsDescription,
-    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&h=350&fit=crop',
-  }));
+  // Busca dados dinâmicos do Banco de Dados
+  const [dbNews, setDbNews] = useState<
+    {
+      id: string | number;
+      title: string;
+      description: string;
+      image: string | null;
+      link?: string | null;
+      isFeatured?: boolean;
+    }[]
+  >([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNewsFromDB = async () => {
+      try {
+        const res = await api.get('/api/news');
+        const newsData = res.data;
+        if (newsData && newsData.length > 0) {
+          // Prioriza os que estão marcados como destaque, ou puxa todos
+          const featured = newsData.filter((n: { isFeatured: boolean }) => n.isFeatured);
+          const newsToShow = featured.length > 0 ? featured : newsData;
+          setDbNews(newsToShow);
+        }
+      } catch (err) {
+        console.error('Erro ao buscar notícias do banco de dados:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchNewsFromDB();
+  }, []);
+
+  const finalNews = dbNews;
 
   // Animação do contêiner para o efeito cascata
   const containerVariants: Variants = {
@@ -75,19 +102,31 @@ export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
           </h2>
         </motion.div>
 
-        {/* Grid de Notícias */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
+        {isLoading ? (
+          <div className="flex justify-center items-center w-full min-h-[200px]">
+            <p className="text-[#013149] text-lg font-roboto animate-pulse">{t.loadingMsg}</p>
+          </div>
+        ) : finalNews.length === 0 ? (
+          <div className="flex justify-center items-center w-full min-h-[200px]">
+            <p className="text-[#5B5B5B] text-lg font-roboto font-light">{t.emptyMsg}</p>
+          </div>
+        ) : (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-50px' }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full justify-items-center"
           style={{ gap: '16px' }}
         >
-          {newsData.map((news, index) => {
+          {/* Exibe no máximo 6 notícias */}
+          {finalNews.slice(0, 6).map((news, index) => {
             return (
-              <motion.div
+              <motion.a
                 key={news.id}
+                href={news.link || '#'}
+                target={news.link && news.link !== '#' ? '_blank' : '_self'}
+                rel="noreferrer"
                 variants={cardVariants}
                 className="group w-full max-w-[334px] rounded-xl flex flex-col justify-start items-start gap-[10px] cursor-pointer hover:shadow-lg transition-all duration-300 bg-[#E6E6E6] hover:bg-[#014263]"
                 style={{
@@ -101,7 +140,10 @@ export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
                   style={{ height: '212px', background: '#041E2B' }}
                 >
                   <Image
-                    src={news.image}
+                    src={
+                      news.image ||
+                      'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&h=350&fit=crop'
+                    }
                     alt={news.title}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -133,10 +175,11 @@ export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
                     {news.description}
                   </p>
                 </div>
-              </motion.div>
+              </motion.a>
             );
           })}
         </motion.div>
+        )}
       </div>
     </section>
   );
