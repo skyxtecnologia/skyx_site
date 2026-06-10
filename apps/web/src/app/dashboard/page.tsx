@@ -25,10 +25,18 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
 
   // Hook do Better Auth para pegar os dados do usuário em tempo real
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
+
+  useEffect(() => {
+    // Se terminou de checar no Render e não encontrou usuário, expulsa pro login
+    if (!isPending && !session) {
+      router.push('/login');
+    }
+  }, [session, isPending, router]);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
+      if (!session) return; // Só busca métricas se tiver logado
       try {
         const response = await api.get<DashboardData>('/api/dashboard/metrics');
         setData(response.data);
@@ -41,7 +49,7 @@ export default function DashboardPage() {
     };
 
     fetchDashboardData();
-  }, []);
+  }, [session]);
 
   const handleLogout = async () => {
     await authClient.signOut();
@@ -76,7 +84,9 @@ export default function DashboardPage() {
 
         {/* Content */}
         <div className="max-w-7xl mx-auto px-6 py-12">
-          {loading && <p className="text-center text-gray-400">Carregando dados do dashboard...</p>}
+          {(isPending || loading) && (
+            <p className="text-center text-gray-400">Verificando segurança e carregando...</p>
+          )}
           {error && <p className="text-center text-red-400">{error}</p>}
 
           {data && (
