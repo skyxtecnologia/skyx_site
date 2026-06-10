@@ -16,8 +16,19 @@ export const auth = betterAuth({
   },
 
   // Origem confiável do frontend.
-  // IMPORTANTE: use a URL do frontend real.
-  trustedOrigins: [process.env.FRONTEND_URL ?? 'http://localhost:3000'],
+  trustedOrigins: [
+    process.env.FRONTEND_URL ?? 'http://localhost:3000',
+    // Garante que o Better Auth aceite a URL com ou sem barra no final
+    process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/` : 'http://localhost:3000/',
+  ],
+
+  // Configuração obrigatória para permitir cookies entre domínios diferentes (Vercel -> Render)
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: 'none',
+      secure: true, // Permite envio seguro via HTTPS
+    },
+  },
 
   // Opcional: campos adicionais no usuário.
   user: {
