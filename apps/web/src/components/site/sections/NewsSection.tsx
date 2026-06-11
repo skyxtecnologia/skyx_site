@@ -114,71 +114,70 @@ export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
           <motion.div
             variants={containerVariants}
             initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-50px' }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full justify-items-center"
-          style={{ gap: '16px' }}
-        >
-          {/* Exibe no máximo 6 notícias */}
-          {finalNews.slice(0, 6).map((news, index) => {
-            return (
-              <motion.a
-                key={news.id}
-                href={news.link || '#'}
-                target={news.link && news.link !== '#' ? '_blank' : '_self'}
-                rel="noreferrer"
-                variants={cardVariants}
-                className="group w-full max-w-[334px] rounded-xl flex flex-col justify-start items-start gap-[10px] cursor-pointer hover:shadow-lg transition-all duration-300 bg-[#E6E6E6] hover:bg-[#014263]"
-                style={{
-                  height: '345px',
-                  padding: '16px',
-                }}
-              >
-                {/* Imagem */}
-                <div
-                  className="w-full rounded-2xl relative overflow-hidden shrink-0"
-                  style={{ height: '212px', background: '#041E2B' }}
+            whileInView="visible"
+            viewport={{ once: true, margin: '-50px' }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full justify-items-center"
+            style={{ gap: '16px' }}
+          >
+            {/* Exibe no máximo 6 notícias */}
+            {finalNews.slice(0, 6).map((news, index) => {
+              return (
+                <motion.a
+                  key={news.id}
+                  href={news.link || '#'}
+                  target={news.link && news.link !== '#' ? '_blank' : '_self'}
+                  rel="noreferrer"
+                  variants={cardVariants}
+                  className="group w-full max-w-[334px] rounded-xl flex flex-col justify-start items-start gap-[10px] cursor-pointer hover:shadow-lg transition-all duration-300 bg-[#E6E6E6] hover:bg-[#014263]"
+                  style={{
+                    height: '345px',
+                    padding: '16px',
+                  }}
                 >
-                  <Image
-                    src={
-                      news.image ||
-                      'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&h=350&fit=crop'
-                    }
-                    alt={news.title}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    unoptimized
-                  />
-                </div>
+                  {/* Imagem */}
+                  <div
+                    className="w-full rounded-2xl relative overflow-hidden shrink-0"
+                    style={{ height: '212px', background: '#041E2B' }}
+                  >
+                    <Image
+                      src={
+                        news.image ||
+                        'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&h=350&fit=crop'
+                      }
+                      alt={news.title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  </div>
 
-                {/* Textos */}
-                <div className="w-full flex flex-col justify-end items-start gap-2 mt-auto">
-                  <h3
-                    className="w-full break-words text-[#014263] group-hover:text-white transition-colors duration-300"
-                    style={{
-                      fontSize: 'clamp(14px, 4vw, 18px)',
-                      fontFamily: "'Zen Dots', sans-serif",
-                      fontWeight: 400,
-                    }}
-                  >
-                    {news.title}
-                  </h3>
-                  <p
-                    className="w-full break-words line-clamp-3 text-[#5B5B5B] group-hover:text-white transition-colors duration-300"
-                    style={{
-                      fontSize: 'clamp(12px, 3vw, 14px)',
-                      fontFamily: "'Roboto', sans-serif",
-                      fontWeight: 300,
-                      lineHeight: '20px',
-                    }}
-                  >
-                    {news.description}
-                  </p>
-                </div>
-              </motion.a>
-            );
-          })}
-        </motion.div>
+                  {/* Textos */}
+                  <div className="w-full flex flex-col justify-end items-start gap-2 mt-auto">
+                    <h3
+                      className="w-full break-words text-[#014263] group-hover:text-white transition-colors duration-300"
+                      style={{
+                        fontSize: 'clamp(14px, 4vw, 18px)',
+                        fontFamily: "'Zen Dots', sans-serif",
+                        fontWeight: 400,
+                      }}
+                    >
+                      {news.title}
+                    </h3>
+                    <p
+                      className="w-full break-words line-clamp-3 text-[#5B5B5B] group-hover:text-white transition-colors duration-300"
+                      style={{
+                        fontSize: 'clamp(12px, 3vw, 14px)',
+                        fontFamily: "'Roboto', sans-serif",
+                        fontWeight: 300,
+                        lineHeight: '20px',
+                      }}
+                    >
+                      {news.description}
+                    </p>
+                  </div>
+                </motion.a>
+              );
+            })}
+          </motion.div>
         )}
       </div>
     </section>

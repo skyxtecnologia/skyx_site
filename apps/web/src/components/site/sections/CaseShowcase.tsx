@@ -254,7 +254,6 @@ export function CaseShowcase({
                             alt={prevProjectData.title}
                             fill
                             className="object-cover"
-                            unoptimized
                           />
                         </motion.div>
                       </AnimatePresence>
@@ -302,7 +301,6 @@ export function CaseShowcase({
                             alt={nextProjectData.title}
                             fill
                             className="object-cover"
-                            unoptimized
                           />
                         </motion.div>
                       </AnimatePresence>
@@ -355,7 +353,6 @@ export function CaseShowcase({
                           alt={currentProject.title}
                           fill
                           className="object-cover"
-                          unoptimized
                         />
                       </div>
 

@@ -194,14 +194,23 @@ export function AboutSection({ lang = 'PT' }: AboutSectionProps) {
     fetchPartners();
   }, []);
 
-  const displayPartners = dbPartners.length > 0
-    ? dbPartners.map((p) => ({ name: p.name, src: p.image, width: 200, height: 110 }))
-    : partners;
+  const displayPartners =
+    dbPartners.length > 0
+      ? dbPartners.map((p) => ({ name: p.name, src: p.image, width: 200, height: 110 }))
+      : partners;
 
   const fadeVariants = {
     hidden: { opacity: 0, scale: 0.98 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.2, ease: 'easeOut' as import('framer-motion').Easing } },
-    exit: { opacity: 0, scale: 0.98, transition: { duration: 0.2, ease: 'easeIn' as import('framer-motion').Easing } },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 0.2, ease: 'easeOut' as import('framer-motion').Easing },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.98,
+      transition: { duration: 0.2, ease: 'easeIn' as import('framer-motion').Easing },
+    },
   };
 
   return (
@@ -395,7 +404,6 @@ export function AboutSection({ lang = 'PT' }: AboutSectionProps) {
                         width={partner.width}
                         height={partner.height}
                         className="w-[120px] md:w-auto h-auto object-contain"
-                        unoptimized
                       />
                     </motion.div>
                   ))}
