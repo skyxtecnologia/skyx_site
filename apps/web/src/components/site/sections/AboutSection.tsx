@@ -20,6 +20,7 @@ const translations = {
       'Desde sua criação, a empresa vem evoluindo continuamente, ampliando sua atuação e explorando novas possibilidades dentro do universo tecnológico. Com foco em inovação e versatilidade, a Sky X se consolidou como uma parceira estratégica no desenvolvimento de soluções que acompanham as demandas do presente e antecipam as necessidades do futuro.',
     valuesTitle: 'Nossos valores',
     partnersTitle: 'Nossos parceiros',
+    emptyPartners: 'Novos parceiros serão exibidos em breve.',
     values: [
       {
         title: 'Inovação',
@@ -61,6 +62,7 @@ const translations = {
       'Since its creation, the company has been continuously evolving, expanding its operations, and exploring new possibilities within the technological universe. With a focus on innovation and versatility, Sky X has consolidated itself as a strategic partner in developing solutions that meet present demands and anticipate future needs.',
     valuesTitle: 'Our values',
     partnersTitle: 'Our partners',
+    emptyPartners: 'New partners will be displayed soon.',
     values: [
       {
         title: 'Innovation',
@@ -89,12 +91,6 @@ const translations = {
     ],
   },
 };
-
-const partners = [
-  { name: 'Partner 1', src: 'https://placehold.co/291x110', width: 291, height: 110 },
-  { name: 'Partner 2', src: 'https://placehold.co/118x110', width: 118, height: 110 },
-  { name: 'Partner 3', src: 'https://placehold.co/248x110', width: 248, height: 110 },
-];
 
 type ContentSlide = 'intro' | 'history' | 'values' | 'partners';
 
@@ -194,10 +190,12 @@ export function AboutSection({ lang = 'PT' }: AboutSectionProps) {
     fetchPartners();
   }, []);
 
-  const displayPartners =
-    dbPartners.length > 0
-      ? dbPartners.map((p) => ({ name: p.name, src: p.image, width: 200, height: 110 }))
-      : partners;
+  const displayPartners = dbPartners.map((p) => ({
+    name: p.name,
+    src: p.image,
+    width: 200,
+    height: 110,
+  }));
 
   const fadeVariants = {
     hidden: { opacity: 0, scale: 0.98 },
@@ -390,24 +388,30 @@ export function AboutSection({ lang = 'PT' }: AboutSectionProps) {
                 </h3>
 
                 <div className="flex flex-wrap justify-center gap-8 items-center">
-                  {displayPartners.map((partner) => (
-                    <motion.div
-                      key={partner.name}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.05, duration: 0.25 }}
-                      whileHover={{ scale: 1.05 }}
-                    >
-                      <Image
-                        src={partner.src}
-                        alt={partner.name}
-                        width={partner.width}
-                        height={partner.height}
-                        className="w-[120px] md:w-auto h-auto object-contain"
-                        unoptimized
-                      />
-                    </motion.div>
-                  ))}
+                  {displayPartners.length === 0 ? (
+                    <p className="text-[#5B5B5B] text-lg font-roboto font-light mt-4">
+                      {t.emptyPartners}
+                    </p>
+                  ) : (
+                    displayPartners.map((partner) => (
+                      <motion.div
+                        key={partner.name}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.05, duration: 0.25 }}
+                        whileHover={{ scale: 1.05 }}
+                      >
+                        <Image
+                          src={partner.src}
+                          alt={partner.name}
+                          width={partner.width}
+                          height={partner.height}
+                          className="w-[120px] md:w-auto h-auto object-contain"
+                          unoptimized
+                        />
+                      </motion.div>
+                    ))
+                  )}
                 </div>
               </motion.div>
             )}

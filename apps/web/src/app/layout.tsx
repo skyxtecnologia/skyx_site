@@ -29,6 +29,9 @@ export const metadata: Metadata = {
     description: 'Plataforma de inovação tecnológica',
     type: 'website',
   },
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
