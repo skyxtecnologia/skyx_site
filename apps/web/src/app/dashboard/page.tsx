@@ -322,6 +322,17 @@ export default function DashboardPage() {
     fetchPartners();
   };
 
+  const handleToggleMessageRead = async (m: ContactMessage) => {
+    await api.put(`/api/contact/${m.id}`, { isRead: !m.isRead });
+    fetchMessages();
+  };
+
+  const handleDeleteMessage = async (id: string) => {
+    if (!confirm('Tem certeza que deseja excluir esta mensagem?')) return;
+    await api.delete(`/api/contact/${id}`);
+    fetchMessages();
+  };
+
   const handleLogout = async () => {
     await authClient.signOut();
     router.push('/login');

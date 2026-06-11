@@ -120,7 +120,7 @@ export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
             style={{ gap: '16px' }}
           >
             {/* Exibe no máximo 6 notícias */}
-            {finalNews.slice(0, 6).map((news, index) => {
+            {finalNews.slice(0, 6).map((news) => {
               return (
                 <motion.a
                   key={news.id}

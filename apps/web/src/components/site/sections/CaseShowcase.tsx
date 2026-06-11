@@ -38,14 +38,7 @@ interface CaseShowcaseProps {
   lang?: 'PT' | 'EN';
 }
 
-export function CaseShowcase({
-  title,
-  projects,
-  caseTitle,
-  description,
-  image,
-  lang = 'PT',
-}: CaseShowcaseProps) {
+export function CaseShowcase({ title, projects, lang = 'PT' }: CaseShowcaseProps) {
   const t = translations[lang];
 
   const [currentIndex, setCurrentIndex] = useState(0);
