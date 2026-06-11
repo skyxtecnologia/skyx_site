@@ -147,6 +147,7 @@ export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
                       alt={news.title}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      unoptimized
                     />
                   </div>
 

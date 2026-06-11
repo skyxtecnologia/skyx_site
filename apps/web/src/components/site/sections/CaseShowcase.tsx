@@ -89,6 +89,7 @@ export function CaseShowcase({ title, projects, lang = 'PT' }: CaseShowcaseProps
 
   // Usa projetos da prop (se houver) ou os que vieram do banco
   const finalProjects = projects || dbProjects;
+  const hasMultiple = finalProjects.length > 1;
 
   const nextProject = () => {
     setDirection(1);
@@ -194,112 +195,116 @@ export function CaseShowcase({ title, projects, lang = 'PT' }: CaseShowcaseProps
                 }}
               >
                 {/* Elementos Laterais (Anteriores e Próximos) */}
-                <div
-                  className="hidden lg:flex"
-                  style={{
-                    width: '100%',
-                    maxWidth: 1264,
-                    position: 'absolute',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    top: 40,
-                    zIndex: 0,
-                  }}
-                >
-                  {/* Esquerda */}
-                  <button
-                    type="button"
-                    onClick={prevProject}
+                {hasMultiple && (
+                  <div
+                    className="hidden lg:flex"
                     style={{
-                      height: 176,
-                      flexDirection: 'column',
-                      justifyContent: 'flex-start',
-                      alignItems: 'flex-start',
-                      gap: 10,
-                      display: 'inline-flex',
-                      cursor: 'pointer',
-                      opacity: 0.6,
-                      transition: 'opacity 0.3s',
+                      width: '100%',
+                      maxWidth: 1264,
+                      position: 'absolute',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      top: 40,
+                      zIndex: 0,
                     }}
-                    className="hover:opacity-100"
                   >
-                    <div
+                    {/* Esquerda */}
+                    <button
+                      type="button"
+                      onClick={prevProject}
                       style={{
-                        width: 352,
-                        flex: '1 1 0',
-                        background: '#D9D9D9',
-                        borderRadius: 16,
-                        position: 'relative',
-                        overflow: 'hidden',
+                        height: 176,
+                        flexDirection: 'column',
+                        justifyContent: 'flex-start',
+                        alignItems: 'flex-start',
+                        gap: 10,
+                        display: 'inline-flex',
+                        cursor: 'pointer',
+                        opacity: 0.6,
+                        transition: 'opacity 0.3s',
                       }}
+                      className="hover:opacity-100"
                     >
-                      <AnimatePresence mode="wait">
-                        <motion.div
-                          key={prevProjectData.id}
-                          initial={{ opacity: 0, x: direction === 1 ? 30 : -30 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: direction === 1 ? -30 : 30 }}
-                          transition={{ duration: 0.4, ease: 'easeInOut' }}
-                          style={{ position: 'absolute', width: '100%', height: '100%' }}
-                        >
-                          <Image
-                            src={prevProjectData.image}
-                            alt={prevProjectData.title}
-                            fill
-                            className="object-cover"
-                          />
-                        </motion.div>
-                      </AnimatePresence>
-                    </div>
-                  </button>
+                      <div
+                        style={{
+                          width: 352,
+                          flex: '1 1 0',
+                          background: '#D9D9D9',
+                          borderRadius: 16,
+                          position: 'relative',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        <AnimatePresence mode="wait">
+                          <motion.div
+                            key={prevProjectData.id}
+                            initial={{ opacity: 0, x: direction === 1 ? 30 : -30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: direction === 1 ? -30 : 30 }}
+                            transition={{ duration: 0.4, ease: 'easeInOut' }}
+                            style={{ position: 'absolute', width: '100%', height: '100%' }}
+                          >
+                            <Image
+                              src={prevProjectData.image}
+                              alt={prevProjectData.title}
+                              fill
+                              className="object-cover"
+                              unoptimized
+                            />
+                          </motion.div>
+                        </AnimatePresence>
+                      </div>
+                    </button>
 
-                  {/* Direita */}
-                  <button
-                    type="button"
-                    onClick={nextProject}
-                    style={{
-                      height: 176,
-                      flexDirection: 'column',
-                      justifyContent: 'flex-start',
-                      alignItems: 'flex-start',
-                      gap: 10,
-                      display: 'inline-flex',
-                      cursor: 'pointer',
-                      opacity: 0.6,
-                      transition: 'opacity 0.3s',
-                    }}
-                    className="hover:opacity-100"
-                  >
-                    <div
+                    {/* Direita */}
+                    <button
+                      type="button"
+                      onClick={nextProject}
                       style={{
-                        width: 352,
-                        flex: '1 1 0',
-                        background: '#D9D9D9',
-                        borderRadius: 16,
-                        position: 'relative',
-                        overflow: 'hidden',
+                        height: 176,
+                        flexDirection: 'column',
+                        justifyContent: 'flex-start',
+                        alignItems: 'flex-start',
+                        gap: 10,
+                        display: 'inline-flex',
+                        cursor: 'pointer',
+                        opacity: 0.6,
+                        transition: 'opacity 0.3s',
                       }}
+                      className="hover:opacity-100"
                     >
-                      <AnimatePresence mode="wait">
-                        <motion.div
-                          key={nextProjectData.id}
-                          initial={{ opacity: 0, x: direction === 1 ? 30 : -30 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: direction === 1 ? -30 : 30 }}
-                          transition={{ duration: 0.4, ease: 'easeInOut' }}
-                          style={{ position: 'absolute', width: '100%', height: '100%' }}
-                        >
-                          <Image
-                            src={nextProjectData.image}
-                            alt={nextProjectData.title}
-                            fill
-                            className="object-cover"
-                          />
-                        </motion.div>
-                      </AnimatePresence>
-                    </div>
-                  </button>
-                </div>
+                      <div
+                        style={{
+                          width: 352,
+                          flex: '1 1 0',
+                          background: '#D9D9D9',
+                          borderRadius: 16,
+                          position: 'relative',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        <AnimatePresence mode="wait">
+                          <motion.div
+                            key={nextProjectData.id}
+                            initial={{ opacity: 0, x: direction === 1 ? 30 : -30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: direction === 1 ? -30 : 30 }}
+                            transition={{ duration: 0.4, ease: 'easeInOut' }}
+                            style={{ position: 'absolute', width: '100%', height: '100%' }}
+                          >
+                            <Image
+                              src={nextProjectData.image}
+                              alt={nextProjectData.title}
+                              fill
+                              className="object-cover"
+                              unoptimized
+                            />
+                          </motion.div>
+                        </AnimatePresence>
+                      </div>
+                    </button>
+                  </div>
+                )}
 
                 {/* Card Principal */}
                 <div
@@ -346,6 +351,7 @@ export function CaseShowcase({ title, projects, lang = 'PT' }: CaseShowcaseProps
                           alt={currentProject.title}
                           fill
                           className="object-cover"
+                          unoptimized
                         />
                       </div>
 
@@ -453,22 +459,24 @@ export function CaseShowcase({ title, projects, lang = 'PT' }: CaseShowcaseProps
                   </AnimatePresence>
 
                   {/* Controles Mobile (Apenas setinhas de < e > no celular) */}
-                  <div className="lg:hidden flex justify-between w-full mt-6">
-                    <button
-                      type="button"
-                      onClick={prevProject}
-                      className="w-12 h-12 flex items-center justify-center rounded-full border border-[#014263] text-[#014263]"
-                    >
-                      ←
-                    </button>
-                    <button
-                      type="button"
-                      onClick={nextProject}
-                      className="w-12 h-12 flex items-center justify-center rounded-full border border-[#014263] text-[#014263]"
-                    >
-                      →
-                    </button>
-                  </div>
+                  {hasMultiple && (
+                    <div className="lg:hidden flex justify-between w-full mt-6">
+                      <button
+                        type="button"
+                        onClick={prevProject}
+                        className="w-12 h-12 flex items-center justify-center rounded-full border border-[#014263] text-[#014263]"
+                      >
+                        ←
+                      </button>
+                      <button
+                        type="button"
+                        onClick={nextProject}
+                        className="w-12 h-12 flex items-center justify-center rounded-full border border-[#014263] text-[#014263]"
+                      >
+                        →
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

@@ -364,7 +364,7 @@ export default function DashboardPage() {
       <aside className="w-72 bg-[#010D13]/90 backdrop-blur-md border-r border-[#014263]/30 flex flex-col relative z-20 shadow-[5px_0_30px_rgba(0,0,0,0.5)]">
         <div className="h-20 border-b border-[#014263]/30 flex items-center justify-center px-6">
           <Image
-            src="/img/logo-branca.png"
+            src="/img/logo_footer.png"
             alt="SkyX Logo"
             width={130}
             height={40}
@@ -636,16 +636,35 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <label htmlFor="newsImage" className="block text-sm text-gray-400 mb-1">
-                        URL da Imagem
+                        URL ou Upload de Imagem
                       </label>
-                      <input
-                        id="newsImage"
-                        type="text"
-                        value={newsForm.image}
-                        onChange={(e) => setNewsForm({ ...newsForm, image: e.target.value })}
-                        className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
-                        placeholder="https://..."
-                      />
+                      <div className="flex gap-2 items-center">
+                        <input
+                          id="newsImage"
+                          type="text"
+                          value={newsForm.image}
+                          onChange={(e) => setNewsForm({ ...newsForm, image: e.target.value })}
+                          className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
+                          placeholder="https://..."
+                        />
+                        <label className="bg-[#67A7D5]/20 text-[#67A7D5] px-4 py-2 rounded-lg cursor-pointer hover:bg-[#67A7D5]/30 transition-colors whitespace-nowrap text-sm font-bold">
+                          Upload
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                if (file.size > 2 * 1024 * 1024) return alert('Máximo de 2MB!');
+                                const reader = new FileReader();
+                                reader.onloadend = () => setNewsForm({ ...newsForm, image: reader.result as string });
+                                reader.readAsDataURL(file);
+                              }
+                            }}
+                          />
+                        </label>
+                      </div>
                     </div>
                     <div className="md:col-span-2">
                       <label htmlFor="newsLink" className="block text-sm text-gray-400 mb-1">
@@ -826,16 +845,35 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <label htmlFor="image" className="block text-sm text-gray-400 mb-1">
-                        URL da Imagem
+                        URL ou Upload de Imagem
                       </label>
-                      <input
-                        id="image"
-                        type="text"
-                        value={caseForm.image}
-                        onChange={(e) => setCaseForm({ ...caseForm, image: e.target.value })}
-                        className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
-                        placeholder="https://..."
-                      />
+                      <div className="flex gap-2 items-center">
+                        <input
+                          id="image"
+                          type="text"
+                          value={caseForm.image}
+                          onChange={(e) => setCaseForm({ ...caseForm, image: e.target.value })}
+                          className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
+                          placeholder="https://..."
+                        />
+                        <label className="bg-[#67A7D5]/20 text-[#67A7D5] px-4 py-2 rounded-lg cursor-pointer hover:bg-[#67A7D5]/30 transition-colors whitespace-nowrap text-sm font-bold">
+                          Upload
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                if (file.size > 2 * 1024 * 1024) return alert('Máximo de 2MB!');
+                                const reader = new FileReader();
+                                reader.onloadend = () => setCaseForm({ ...caseForm, image: reader.result as string });
+                                reader.readAsDataURL(file);
+                              }
+                            }}
+                          />
+                        </label>
+                      </div>
                     </div>
                     <div className="md:col-span-2">
                       <label htmlFor="link" className="block text-sm text-gray-400 mb-1">
@@ -1012,8 +1050,27 @@ export default function DashboardPage() {
                       <input id="partnerName" required type="text" value={partnerForm.name} onChange={(e) => setPartnerForm({ ...partnerForm, name: e.target.value })} className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none" placeholder="Ex: Microsoft" />
                     </div>
                     <div>
-                      <label htmlFor="partnerImage" className="block text-sm text-gray-400 mb-1">URL da Logo (PNG sem fundo)</label>
-                      <input id="partnerImage" required type="text" value={partnerForm.image} onChange={(e) => setPartnerForm({ ...partnerForm, image: e.target.value })} className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none" placeholder="https://..." />
+                      <label htmlFor="partnerImage" className="block text-sm text-gray-400 mb-1">URL ou Upload (Logo sem fundo)</label>
+                      <div className="flex gap-2 items-center">
+                        <input id="partnerImage" required type="text" value={partnerForm.image} onChange={(e) => setPartnerForm({ ...partnerForm, image: e.target.value })} className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none" placeholder="https://..." />
+                        <label className="bg-[#67A7D5]/20 text-[#67A7D5] px-4 py-2 rounded-lg cursor-pointer hover:bg-[#67A7D5]/30 transition-colors whitespace-nowrap text-sm font-bold">
+                          Upload
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                if (file.size > 2 * 1024 * 1024) return alert('Máximo de 2MB!');
+                                const reader = new FileReader();
+                                reader.onloadend = () => setPartnerForm({ ...partnerForm, image: reader.result as string });
+                                reader.readAsDataURL(file);
+                              }
+                            }}
+                          />
+                        </label>
+                      </div>
                     </div>
                     <div className="md:col-span-2 flex items-center gap-2 mt-2">
                       <input type="checkbox" id="isFeaturedPartner" checked={partnerForm.isFeatured} onChange={(e) => setPartnerForm({ ...partnerForm, isFeatured: e.target.checked })} className="w-4 h-4 accent-primary" />

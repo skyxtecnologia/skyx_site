@@ -1,6 +1,7 @@
 import { fromNodeHeaders } from 'better-auth/node';
 import { type Request, Router } from 'express';
 import { auth } from '../lib/auth.js';
+import prisma from '../lib/prisma.js';
 
 const router = Router();
 
@@ -22,13 +23,17 @@ router.get('/metrics', async (req: AuthRequest, res) => {
       return res.status(401).json({ error: 'Não autorizado: Sessão inválida.' });
     }
 
-    // Se a sessão for válida, retornamos dados mockados para o dashboard
+    // Puxando dados reais do Banco de Dados
+    const casesCount = await prisma.case.count();
+    const newsCount = await prisma.news.count();
+    const unreadCount = await prisma.contactMessage.count({ where: { isRead: false } });
+
     res.json({
       welcomeMessage: `Bem-vindo(a) de volta, ${session.user.name}!`,
       metrics: [
-        { id: 1, title: 'Projetos Ativos', value: '12' },
-        { id: 2, title: 'Tarefas Pendentes', value: '5' },
-        { id: 3, title: 'Satisfação do Cliente', value: '98%' },
+        { id: 1, title: 'Cases de Sucesso', value: casesCount.toString() },
+        { id: 2, title: 'Notícias Publicadas', value: newsCount.toString() },
+        { id: 3, title: 'Mensagens Não Lidas', value: unreadCount.toString() },
       ],
     });
   } catch (error) {

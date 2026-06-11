@@ -404,6 +404,7 @@ export function AboutSection({ lang = 'PT' }: AboutSectionProps) {
                         width={partner.width}
                         height={partner.height}
                         className="w-[120px] md:w-auto h-auto object-contain"
+                        unoptimized
                       />
                     </motion.div>
                   ))}
