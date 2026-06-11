@@ -111,10 +111,10 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
 
   return (
     <section
-      id="cases"
-      className="relative w-full min-h-screen flex flex-col items-center bg-white py-24 px-6 md:px-12 overflow-hidden"
+      id="servicos"
+      className="relative w-full min-h-[100vh] flex flex-col items-center justify-center bg-white py-12 md:py-16 px-6 md:px-12 overflow-hidden"
     >
-      <div className="w-full max-w-[1050px] mx-auto flex flex-col items-center gap-6">
+      <div className="w-full max-w-[1050px] mx-auto flex flex-col items-center gap-8">
         {/* Cabeçalho da Seção */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -127,7 +127,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
             className="text-center uppercase break-words"
             style={{
               color: '#013149',
-              fontSize: 'clamp(24px, 5vw, 32px)',
+              fontSize: 'clamp(28px, 5vw, 40px)',
               fontFamily: "'Roboto Condensed', sans-serif",
               fontWeight: 400,
             }}
@@ -147,7 +147,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
           {/* Card 1: Imersivas */}
           <motion.div
             variants={cardVariants}
-            className="group relative w-full max-w-[335px] h-[372px] rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500"
+            className="group relative w-full max-w-[335px] h-[300px] md:h-[320px] rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500"
           >
             <Image
               src="/img/card_case_1.png"
@@ -167,7 +167,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
                 className="uppercase break-words w-full"
                 style={{
                   color: '#014263',
-                  fontSize: 'clamp(18px, 4vw, 22px)',
+                  fontSize: 'clamp(14px, 3vw, 18px)',
                   fontFamily: "'Roboto', sans-serif",
                   fontWeight: 400,
                   lineHeight: '1.2',
@@ -179,7 +179,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
                 className="break-words w-full"
                 style={{
                   color: '#014263',
-                  fontSize: 'clamp(10px, 3vw, 12px)',
+                  fontSize: 'clamp(11px, 2vw, 13px)',
                   fontFamily: "'Roboto', sans-serif",
                   fontWeight: 300,
                   lineHeight: '1.5',
@@ -193,7 +193,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
           {/* Card 2: Software */}
           <motion.div
             variants={cardVariants}
-            className="group relative w-full max-w-[335px] h-[372px] rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500"
+            className="group relative w-full max-w-[335px] h-[300px] md:h-[320px] rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500"
           >
             <Image
               src="/img/card_case_2.png"
@@ -213,7 +213,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
                 className="uppercase text-right break-words w-full"
                 style={{
                   color: 'white',
-                  fontSize: 'clamp(18px, 4vw, 24px)',
+                  fontSize: 'clamp(14px, 3vw, 18px)',
                   fontFamily: "'Roboto', sans-serif",
                   fontWeight: 300,
                   lineHeight: '1.2',
@@ -226,7 +226,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
                 className="text-left break-words w-full"
                 style={{
                   color: 'white',
-                  fontSize: 'clamp(10px, 3vw, 12px)',
+                  fontSize: 'clamp(11px, 2vw, 13px)',
                   fontFamily: "'Roboto', sans-serif",
                   fontWeight: 400,
                 }}
@@ -239,7 +239,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
           {/* Card 3: Design */}
           <motion.div
             variants={cardVariants}
-            className="group relative w-full max-w-[335px] h-[372px] rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500"
+            className="group relative w-full max-w-[335px] h-[300px] md:h-[320px] rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500"
           >
             <Image
               src="/img/card_case_3.png"
@@ -259,7 +259,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
                 className="uppercase text-right break-words w-full"
                 style={{
                   color: '#014263',
-                  fontSize: 'clamp(16px, 4vw, 20px)',
+                  fontSize: 'clamp(14px, 3vw, 18px)',
                   fontFamily: "'Roboto Condensed', sans-serif",
                   fontWeight: 400,
                 }}
@@ -270,7 +270,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
                 className="text-right break-words w-full"
                 style={{
                   color: '#014263',
-                  fontSize: 'clamp(10px, 3vw, 12px)',
+                  fontSize: 'clamp(11px, 2vw, 13px)',
                   fontFamily: "'Roboto', sans-serif",
                   fontWeight: 400,
                   lineHeight: '1.5',
@@ -284,7 +284,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
           {/* Card 4: Segurança */}
           <motion.div
             variants={cardVariants}
-            className="group relative w-full max-w-[335px] h-[372px] rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500"
+            className="group relative w-full max-w-[335px] h-[300px] md:h-[320px] rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500"
           >
             <Image
               src="/img/card_case_4.png"
@@ -304,7 +304,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
                 className="uppercase break-words w-full drop-shadow-md"
                 style={{
                   color: 'white',
-                  fontSize: 'clamp(16px, 4vw, 20px)',
+                  fontSize: 'clamp(14px, 3vw, 18px)',
                   fontFamily: "'Roboto Condensed', sans-serif",
                   fontWeight: 400,
                 }}
@@ -317,7 +317,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
           {/* Card 5: Inovação */}
           <motion.div
             variants={cardVariants}
-            className="group relative w-full max-w-[335px] h-[372px] rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500"
+            className="group relative w-full max-w-[335px] h-[300px] md:h-[320px] rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500"
           >
             <Image
               src="/img/card_case_5.png"
@@ -334,7 +334,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
                 className="uppercase break-words w-full drop-shadow-md"
                 style={{
                   color: 'white',
-                  fontSize: 'clamp(18px, 4vw, 22px)',
+                  fontSize: 'clamp(14px, 3vw, 18px)',
                   fontFamily: "'Roboto', sans-serif",
                   fontWeight: 400,
                 }}
@@ -345,7 +345,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
                 className="break-words w-full"
                 style={{
                   color: 'white',
-                  fontSize: 'clamp(10px, 3vw, 12px)',
+                  fontSize: 'clamp(11px, 2vw, 13px)',
                   fontFamily: "'Roboto', sans-serif",
                   fontWeight: 300,
                 }}
@@ -358,7 +358,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
           {/* Card 6: 3D */}
           <motion.div
             variants={cardVariants}
-            className="group relative w-full max-w-[335px] h-[372px] rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500"
+            className="group relative w-full max-w-[335px] h-[300px] md:h-[320px] rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500"
           >
             <Image
               src="/img/card_case_6.png"
@@ -375,7 +375,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
                 className="uppercase text-center break-words w-full drop-shadow-md"
                 style={{
                   color: 'white',
-                  fontSize: 'clamp(16px, 4vw, 20px)',
+                  fontSize: 'clamp(14px, 3vw, 18px)',
                   fontFamily: "'Roboto Condensed', sans-serif",
                   fontWeight: 200,
                 }}
@@ -386,7 +386,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
                 className="text-center break-words w-full drop-shadow-sm"
                 style={{
                   color: 'white',
-                  fontSize: 'clamp(10px, 3vw, 12px)',
+                  fontSize: 'clamp(11px, 2vw, 13px)',
                   fontFamily: "'Roboto', sans-serif",
                   fontWeight: 300,
                 }}

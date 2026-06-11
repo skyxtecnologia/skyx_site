@@ -9,7 +9,7 @@ const imgLogo1 = '/img/logo-nav.png';
 
 const translations = {
   PT: {
-    nav: ['Sobre nós', 'Cases', 'Blog', 'Contato', 'Streaming'],
+    nav: ['Sobre nós', 'Serviços', 'Cases', 'Blog', 'Contato', 'Streaming'],
     login: 'LOGIN',
     lang: 'Idioma',
     title1: 'Uma nova forma de',
@@ -19,7 +19,7 @@ const translations = {
     scroll: 'Role para baixo',
   },
   EN: {
-    nav: ['About Us', 'Cases', 'Blog', 'Contact', 'Streaming'],
+    nav: ['About Us', 'Services', 'Cases', 'Blog', 'Contact', 'Streaming'],
     login: 'LOGIN',
     lang: 'Language',
     title1: 'A new way to',
@@ -47,6 +47,8 @@ export function HomeHero({ lang = 'PT', setLang = () => {} }: HomeHeroProps) {
   const sectionMap: Record<string, string> = {
     'Sobre nós': 'about',
     'About Us': 'about',
+    'Serviços': 'servicos',
+    'Services': 'servicos',
     Cases: 'cases',
     Blog: 'news',
     Contato: 'contato',

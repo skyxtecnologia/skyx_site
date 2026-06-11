@@ -2,6 +2,7 @@
 
 import { type Variants, motion } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { api } from '../../../lib/api';
 
@@ -10,11 +11,13 @@ const translations = {
     title: 'Ultimas noticias',
     emptyMsg: 'Novas notícias serão publicadas em breve.',
     loadingMsg: 'Carregando notícias...',
+    viewAll: 'Ver todas as notícias',
   },
   EN: {
     title: 'Latest news',
     emptyMsg: 'New articles will be published soon.',
     loadingMsg: 'Loading news...',
+    viewAll: 'View all news',
   },
 } as const;
 
@@ -111,74 +114,96 @@ export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
             <p className="text-[#5B5B5B] text-lg font-roboto font-light">{t.emptyMsg}</p>
           </div>
         ) : (
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-50px' }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full justify-items-center"
-            style={{ gap: '16px' }}
-          >
-            {/* Exibe no máximo 6 notícias */}
-            {finalNews.slice(0, 6).map((news) => {
-              return (
-                <motion.a
-                  key={news.id}
-                  href={news.link || '#'}
-                  target={news.link && news.link !== '#' ? '_blank' : '_self'}
-                  rel="noreferrer"
-                  variants={cardVariants}
-                  className="group w-full max-w-[334px] rounded-xl flex flex-col justify-start items-start gap-[10px] cursor-pointer hover:shadow-lg transition-all duration-300 bg-[#E6E6E6] hover:bg-[#014263]"
-                  style={{
-                    height: '345px',
-                    padding: '16px',
-                  }}
-                >
-                  {/* Imagem */}
-                  <div
-                    className="w-full rounded-2xl relative overflow-hidden shrink-0"
-                    style={{ height: '212px', background: '#041E2B' }}
+          <>
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-50px' }}
+              className="flex flex-wrap justify-center w-full"
+              style={{ gap: '24px' }}
+            >
+              {/* Exibe no máximo 6 notícias */}
+              {finalNews.slice(0, 6).map((news) => {
+                return (
+                  <motion.a
+                    key={news.id}
+                    href={news.link || '#'}
+                    target={news.link && news.link !== '#' ? '_blank' : '_self'}
+                    rel="noreferrer"
+                    variants={cardVariants}
+                    className="group w-full max-w-[340px] flex flex-col justify-start items-start cursor-pointer transition-all duration-300"
                   >
-                    <Image
-                      src={
-                        news.image ||
-                        'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&h=350&fit=crop'
-                      }
-                      alt={news.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                      unoptimized
-                    />
-                  </div>
+                    {/* Imagem */}
+                    <div
+                      className="w-full rounded-2xl relative overflow-hidden shrink-0 shadow-sm mb-4"
+                      style={{ aspectRatio: '4/3', background: '#041E2B' }}
+                    >
+                      <Image
+                        src={
+                          news.image ||
+                          'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&h=350&fit=crop'
+                        }
+                        alt={news.title}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        unoptimized
+                      />
+                      {news.isFeatured && (
+                        <div className="absolute top-3 left-3">
+                          <span className="px-3 py-1 bg-white/90 backdrop-blur-md text-[#013149] text-[10px] font-bold uppercase tracking-widest rounded-full shadow-sm">
+                            Destaque
+                          </span>
+                        </div>
+                      )}
+                    </div>
 
-                  {/* Textos */}
-                  <div className="w-full flex flex-col justify-end items-start gap-2 mt-auto">
-                    <h3
-                      className="w-full break-words text-[#014263] group-hover:text-white transition-colors duration-300"
-                      style={{
-                        fontSize: 'clamp(14px, 4vw, 18px)',
-                        fontFamily: "'Zen Dots', sans-serif",
-                        fontWeight: 400,
-                      }}
-                    >
-                      {news.title}
-                    </h3>
-                    <p
-                      className="w-full break-words line-clamp-3 text-[#5B5B5B] group-hover:text-white transition-colors duration-300"
-                      style={{
-                        fontSize: 'clamp(12px, 3vw, 14px)',
-                        fontFamily: "'Roboto', sans-serif",
-                        fontWeight: 300,
-                        lineHeight: '20px',
-                      }}
-                    >
-                      {news.description}
-                    </p>
-                  </div>
-                </motion.a>
-              );
-            })}
-          </motion.div>
+                    {/* Textos */}
+                    <div className="w-full flex flex-col justify-start items-start px-2">
+                      <h3
+                        className="w-full break-words text-[#014263] group-hover:text-[#67A7D5] transition-colors duration-300 line-clamp-2 mb-2"
+                        style={{
+                          fontSize: 'clamp(16px, 4vw, 20px)',
+                          fontFamily: "'Zen Dots', sans-serif",
+                          fontWeight: 400,
+                          lineHeight: '1.3',
+                        }}
+                      >
+                        {news.title}
+                      </h3>
+                      <p
+                        className="w-full break-words line-clamp-3 text-[#5B5B5B]"
+                        style={{
+                          fontSize: 'clamp(13px, 3vw, 15px)',
+                          fontFamily: "'Roboto', sans-serif",
+                          fontWeight: 300,
+                          lineHeight: '1.6',
+                        }}
+                      >
+                        {news.description}
+                      </p>
+                    </div>
+                  </motion.a>
+                );
+              })}
+            </motion.div>
+
+            {/* Botão Ver Todas as Notícias */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="mt-6 flex justify-center w-full"
+            >
+              <Link
+                href="/noticias"
+                className="group border border-[#014263] text-[#014263] px-6 py-2.5 rounded-lg text-sm font-roboto font-medium hover:bg-[#014263] hover:text-white transition-colors duration-300 shadow-sm"
+              >
+                {t.viewAll}
+              </Link>
+            </motion.div>
+          </>
         )}
       </div>
     </section>

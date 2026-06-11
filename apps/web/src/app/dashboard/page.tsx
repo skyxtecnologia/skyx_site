@@ -28,6 +28,11 @@ interface Case {
   image: string | null;
   link: string | null;
   isFeatured: boolean;
+  year?: string | null;
+  client?: string | null;
+  tags?: string | null;
+  technologies?: string | null;
+  gallery?: string | null;
   createdAt: string;
 }
 
@@ -38,6 +43,8 @@ interface News {
   image: string | null;
   link: string | null;
   isFeatured: boolean;
+  content?: string | null;
+  tags?: string | null;
   createdAt: string;
 }
 
@@ -77,6 +84,11 @@ export default function DashboardPage() {
     image: '',
     link: '',
     isFeatured: false,
+    year: '',
+    client: '',
+    tags: '',
+    technologies: '',
+    gallery: '',
   });
   const [submittingCase, setSubmittingCase] = useState(false);
   const [editingCaseId, setEditingCaseId] = useState<string | null>(null);
@@ -91,6 +103,8 @@ export default function DashboardPage() {
     image: '',
     link: '',
     isFeatured: false,
+    content: '',
+    tags: '',
   });
   const [submittingNews, setSubmittingNews] = useState(false);
   const [editingNewsId, setEditingNewsId] = useState<string | null>(null);
@@ -110,6 +124,69 @@ export default function DashboardPage() {
   // Estados para o módulo de Mensagens
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(false);
+
+  // Estados para Progresso de Upload
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+
+  // Função global inteligente para processar imagens e vídeos com barra de progresso
+  const processFiles = async (files: File[]): Promise<string[]> => {
+    const validFiles = files.filter((f) => f.size <= 5 * 1024 * 1024);
+    if (validFiles.length !== files.length) {
+      alert('Alguns arquivos excedem o limite de 5MB e foram ignorados!');
+    }
+    if (validFiles.length === 0) return [];
+
+    setUploadProgress(0);
+    let totalLoaded = 0;
+    const totalSize = validFiles.reduce((acc, f) => acc + f.size, 0);
+
+    const results = await Promise.all(
+      validFiles.map(
+        (file) =>
+          new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            let fileLoaded = 0;
+
+            reader.onprogress = (e) => {
+              if (e.lengthComputable) {
+                totalLoaded += e.loaded - fileLoaded;
+                fileLoaded = e.loaded;
+                setUploadProgress(Math.min(99, Math.round((totalLoaded / totalSize) * 100)));
+              }
+            };
+
+            reader.onloadend = () => {
+              totalLoaded += file.size - fileLoaded;
+              setUploadProgress(Math.min(100, Math.round((totalLoaded / totalSize) * 100)));
+              resolve(reader.result as string);
+            };
+
+            reader.readAsDataURL(file);
+          })
+      )
+    );
+
+    // Aguarda um instante para o usuário ver o 100% concluído com sucesso
+    setTimeout(() => setUploadProgress(null), 800);
+    return results;
+  };
+
+  // Função auxiliar para evitar split incorreto de base64 que contém vírgula na galeria
+  const parseGalleryStr = (str: string | null | undefined): string[] => {
+    if (!str) return [];
+    const parts: string[] = [];
+    let current = '';
+    for (let i = 0; i < str.length; i++) {
+      if (str[i] === ',' && !current.trim().toLowerCase().endsWith('base64')) {
+        parts.push(current.trim());
+        current = '';
+      } else {
+        current += str[i];
+      }
+    }
+    if (current.trim()) parts.push(current.trim());
+    return parts.filter(Boolean);
+  };
 
   useEffect(() => {
     // Se terminou de checar no Render e não encontrou usuário, expulsa pro login
@@ -210,7 +287,7 @@ export default function DashboardPage() {
       }
       setShowCaseForm(false);
       setEditingCaseId(null);
-      setCaseForm({ title: '', description: '', image: '', link: '', isFeatured: false });
+      setCaseForm({ title: '', description: '', image: '', link: '', isFeatured: false, year: '', client: '', tags: '', technologies: '', gallery: '' });
       fetchCases();
     } catch (err) {
       console.error('Erro ao salvar case', err);
@@ -227,6 +304,11 @@ export default function DashboardPage() {
       image: c.image || '',
       link: c.link || '',
       isFeatured: c.isFeatured,
+      year: c.year || '',
+      client: c.client || '',
+      tags: c.tags || '',
+      technologies: c.technologies || '',
+      gallery: c.gallery || '',
     });
     setShowCaseForm(true);
   };
@@ -242,7 +324,7 @@ export default function DashboardPage() {
       }
       setShowNewsForm(false);
       setEditingNewsId(null);
-      setNewsForm({ title: '', description: '', image: '', link: '', isFeatured: false });
+      setNewsForm({ title: '', description: '', image: '', link: '', isFeatured: false, content: '', tags: '' });
       fetchNews();
     } catch (err) {
       console.error('Erro ao salvar notícia', err);
@@ -259,6 +341,8 @@ export default function DashboardPage() {
       image: n.image || '',
       link: n.link || '',
       isFeatured: n.isFeatured,
+      content: n.content || '',
+      tags: n.tags || '',
     });
     setShowNewsForm(true);
   };
@@ -359,6 +443,20 @@ export default function DashboardPage() {
       {/* Elementos decorativos de fundo (Glow Orbs) */}
       <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#014263] opacity-20 rounded-full blur-[120px] pointer-events-none" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-[#67A7D5] opacity-10 rounded-full blur-[120px] pointer-events-none" />
+
+      {/* Modal de Progresso de Upload */}
+      {uploadProgress !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-[#010D13] p-8 rounded-2xl border border-[#014263]/30 w-full max-w-sm shadow-2xl flex flex-col items-center gap-4">
+            <div className="w-12 h-12 rounded-full border-4 border-[#014263] border-t-[#67A7D5] animate-spin mb-2" />
+            <p className="text-white font-bold text-lg">Processando mídia...</p>
+            <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden mt-2">
+              <div className="bg-[#67A7D5] h-full transition-all duration-300 ease-out" style={{ width: `${uploadProgress}%` }} />
+            </div>
+            <p className="text-[#67A7D5] font-semibold text-sm">{uploadProgress}%</p>
+          </div>
+        </div>
+      )}
 
       {/* Menu Lateral (Sidebar) */}
       <aside className="w-72 bg-[#010D13]/90 backdrop-blur-md border-r border-[#014263]/30 flex flex-col relative z-20 shadow-[5px_0_30px_rgba(0,0,0,0.5)]">
@@ -589,7 +687,7 @@ export default function DashboardPage() {
                   type="button"
                   onClick={() => {
                     setEditingNewsId(null);
-                    setNewsForm({ title: '', description: '', image: '', link: '', isFeatured: false });
+                    setNewsForm({ title: '', description: '', image: '', link: '', isFeatured: false, content: '', tags: '' });
                     setShowNewsForm(!showNewsForm);
                   }}
                   className="bg-primary hover:bg-primary-dark text-dark font-semibold px-6 py-2 rounded-lg transition-colors flex items-center gap-2"
@@ -635,36 +733,40 @@ export default function DashboardPage() {
                       />
                     </div>
                     <div>
-                      <label htmlFor="newsImage" className="block text-sm text-gray-400 mb-1">
+                      <span className="block text-sm text-gray-400 mb-1">
                         URL ou Upload de Imagem
-                      </label>
-                      <div className="flex gap-2 items-center">
-                        <input
-                          id="newsImage"
-                          type="text"
-                          value={newsForm.image}
-                          onChange={(e) => setNewsForm({ ...newsForm, image: e.target.value })}
-                          className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
-                          placeholder="https://..."
-                        />
-                        <label className="bg-[#67A7D5]/20 text-[#67A7D5] px-4 py-2 rounded-lg cursor-pointer hover:bg-[#67A7D5]/30 transition-colors whitespace-nowrap text-sm font-bold">
-                          Upload
+                      </span>
+                      {newsForm.image ? (
+                        <div className="relative w-full h-32 bg-[#010D13] rounded-lg border border-gray-700 flex items-center justify-center overflow-hidden">
+                          <img src={newsForm.image} alt="Preview" className="max-w-full max-h-full object-contain" />
+                          <button type="button" onClick={() => setNewsForm({ ...newsForm, image: '' })} className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shadow-lg text-sm transition-colors">✕</button>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2 items-center">
                           <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                if (file.size > 2 * 1024 * 1024) return alert('Máximo de 2MB!');
-                                const reader = new FileReader();
-                                reader.onloadend = () => setNewsForm({ ...newsForm, image: reader.result as string });
-                                reader.readAsDataURL(file);
-                              }
-                            }}
+                            id="newsImage"
+                            type="text"
+                            value={newsForm.image}
+                            onChange={(e) => setNewsForm({ ...newsForm, image: e.target.value })}
+                            className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
+                            placeholder="https://..."
                           />
-                        </label>
-                      </div>
+                          <label className="bg-[#67A7D5]/20 text-[#67A7D5] px-4 py-2 rounded-lg cursor-pointer hover:bg-[#67A7D5]/30 transition-colors whitespace-nowrap text-sm font-bold">
+                            Upload
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={async (e) => {
+                                const files = Array.from(e.target.files || []);
+                                const results = await processFiles(files);
+                                if (results.length > 0) setNewsForm({ ...newsForm, image: results[0] });
+                                e.target.value = '';
+                              }}
+                            />
+                          </label>
+                        </div>
+                      )}
                     </div>
                     <div className="md:col-span-2">
                       <label htmlFor="newsLink" className="block text-sm text-gray-400 mb-1">
@@ -690,6 +792,31 @@ export default function DashboardPage() {
                         onChange={(e) => setNewsForm({ ...newsForm, description: e.target.value })}
                         className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none h-24"
                         placeholder="Breve resumo..."
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label htmlFor="newsTags" className="block text-sm text-gray-400 mb-1">
+                        Tags / Classificações (Separe por vírgulas)
+                      </label>
+                      <input
+                        id="newsTags"
+                        type="text"
+                        value={newsForm.tags}
+                        onChange={(e) => setNewsForm({ ...newsForm, tags: e.target.value })}
+                        className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
+                        placeholder="Ex: Tecnologia, Inovação, Educação..."
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label htmlFor="newsContent" className="block text-sm text-gray-400 mb-1">
+                        Conteúdo Completo (Texto da matéria)
+                      </label>
+                      <textarea
+                        id="newsContent"
+                        value={newsForm.content}
+                        onChange={(e) => setNewsForm({ ...newsForm, content: e.target.value })}
+                        className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none h-48"
+                        placeholder="Escreva o artigo completo aqui..."
                       />
                     </div>
                     <div className="md:col-span-2 flex items-center gap-2">
@@ -798,7 +925,7 @@ export default function DashboardPage() {
                   type="button"
                   onClick={() => {
                     setEditingCaseId(null);
-                    setCaseForm({ title: '', description: '', image: '', link: '', isFeatured: false });
+                    setCaseForm({ title: '', description: '', image: '', link: '', isFeatured: false, year: '', client: '', tags: '', technologies: '', gallery: '' });
                     setShowCaseForm(!showCaseForm);
                   }}
                   className="bg-primary hover:bg-primary-dark text-dark font-semibold px-6 py-2 rounded-lg transition-colors flex items-center gap-2"
@@ -844,38 +971,32 @@ export default function DashboardPage() {
                       />
                     </div>
                     <div>
-                      <label htmlFor="image" className="block text-sm text-gray-400 mb-1">
-                        URL ou Upload de Imagem
+                      <label htmlFor="client" className="block text-sm text-gray-400 mb-1">
+                        Cliente
                       </label>
-                      <div className="flex gap-2 items-center">
-                        <input
-                          id="image"
-                          type="text"
-                          value={caseForm.image}
-                          onChange={(e) => setCaseForm({ ...caseForm, image: e.target.value })}
-                          className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
-                          placeholder="https://..."
-                        />
-                        <label className="bg-[#67A7D5]/20 text-[#67A7D5] px-4 py-2 rounded-lg cursor-pointer hover:bg-[#67A7D5]/30 transition-colors whitespace-nowrap text-sm font-bold">
-                          Upload
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                if (file.size > 2 * 1024 * 1024) return alert('Máximo de 2MB!');
-                                const reader = new FileReader();
-                                reader.onloadend = () => setCaseForm({ ...caseForm, image: reader.result as string });
-                                reader.readAsDataURL(file);
-                              }
-                            }}
-                          />
-                        </label>
-                      </div>
+                      <input
+                        id="client"
+                        type="text"
+                        value={caseForm.client}
+                        onChange={(e) => setCaseForm({ ...caseForm, client: e.target.value })}
+                        className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
+                        placeholder="Ex: Empresa Confidencial"
+                      />
                     </div>
-                    <div className="md:col-span-2">
+                    <div>
+                      <label htmlFor="year" className="block text-sm text-gray-400 mb-1">
+                        Ano de Entrega
+                      </label>
+                      <input
+                        id="year"
+                        type="text"
+                        value={caseForm.year}
+                        onChange={(e) => setCaseForm({ ...caseForm, year: e.target.value })}
+                        className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
+                        placeholder="Ex: 2024"
+                      />
+                    </div>
+                    <div>
                       <label htmlFor="link" className="block text-sm text-gray-400 mb-1">
                         Link do Projeto (Opcional)
                       </label>
@@ -886,6 +1007,136 @@ export default function DashboardPage() {
                         onChange={(e) => setCaseForm({ ...caseForm, link: e.target.value })}
                         className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
                         placeholder="https://..."
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <span className="block text-sm text-gray-400 mb-1">
+                        URL ou Upload da Imagem de Fundo (Capa)
+                      </span>
+                      {caseForm.image ? (
+                        <div className="relative w-full h-40 bg-[#010D13] rounded-lg border border-gray-700 flex items-center justify-center overflow-hidden">
+                          <img src={caseForm.image} alt="Preview" className="max-w-full max-h-full object-contain" />
+                          <button type="button" onClick={() => setCaseForm({ ...caseForm, image: '' })} className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shadow-lg text-sm transition-colors">✕</button>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2 items-center">
+                          <input
+                            id="image"
+                            type="text"
+                            value={caseForm.image}
+                            onChange={(e) => setCaseForm({ ...caseForm, image: e.target.value })}
+                            className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
+                            placeholder="https://..."
+                          />
+                          <label className="bg-[#67A7D5]/20 text-[#67A7D5] px-4 py-2 rounded-lg cursor-pointer hover:bg-[#67A7D5]/30 transition-colors whitespace-nowrap text-sm font-bold">
+                            Upload
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={async (e) => {
+                                const files = Array.from(e.target.files || []);
+                                const results = await processFiles(files);
+                                if (results.length > 0) setCaseForm({ ...caseForm, image: results[0] });
+                                e.target.value = '';
+                              }}
+                            />
+                          </label>
+                        </div>
+                      )}
+                    </div>
+                    <div className="md:col-span-2">
+                      <span className="block text-sm text-gray-400 mb-2">
+                        Galeria de Imagens e Vídeos
+                      </span>
+                      {caseForm.gallery && caseForm.gallery.trim().length > 0 && (
+                        <div className="flex flex-wrap gap-4 mb-4 p-4 bg-[#010D13] rounded-lg border border-gray-700">
+                          {parseGalleryStr(caseForm.gallery).map((item, idx) => {
+                            const isVideo = item.startsWith('data:video/') || item.match(/\.(mp4|webm|ogg)$/i);
+                            return (
+                              // biome-ignore lint/suspicious/noArrayIndexKey: Array de strings simples
+                              <div key={`gallery-${idx}`} className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-600 bg-black group">
+                                {isVideo ? (
+                                  <video src={item} muted autoPlay loop playsInline className="w-full h-full object-cover">
+                                    <track kind="captions" />
+                                  </video>
+                                ) : (
+                                  <img src={item} alt={`Mídia ${idx + 1}`} className="w-full h-full object-cover" />
+                                )}
+                                <button type="button" onClick={() => {
+                                  const arr = parseGalleryStr(caseForm.gallery);
+                                  arr.splice(idx, 1);
+                                  setCaseForm({...caseForm, gallery: arr.join(', ')});
+                                }} className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white w-6 h-6 rounded-full flex justify-center items-center text-xs shadow-md opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                      <div className="flex gap-2 items-center">
+                        <input
+                          id="gallery-input"
+                          type="text"
+                          className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
+                          placeholder="Cole uma URL e clique em Adicionar..."
+                        />
+                        <button type="button" onClick={() => {
+                          const input = document.getElementById('gallery-input') as HTMLInputElement;
+                          const val = input?.value.trim();
+                          if (val) {
+                            const existing = parseGalleryStr(caseForm.gallery);
+                            existing.push(val);
+                            setCaseForm({...caseForm, gallery: existing.join(', ')});
+                            input.value = '';
+                          }
+                        }} className="bg-[#67A7D5]/20 text-[#67A7D5] px-4 py-2 rounded-lg hover:bg-[#67A7D5]/30 transition-colors whitespace-nowrap text-sm font-bold">
+                          Adicionar
+                        </button>
+                        <label className="bg-[#67A7D5]/20 text-[#67A7D5] px-4 py-2 rounded-lg cursor-pointer hover:bg-[#67A7D5]/30 transition-colors whitespace-nowrap text-sm font-bold">
+                          Upload
+                          <input
+                            type="file"
+                            accept="image/*,video/*"
+                            multiple
+                            className="hidden"
+                              onChange={async (e) => {
+                                const files = Array.from(e.target.files || []);
+                                const results = await processFiles(files);
+                                if (results.length > 0) {
+                                  const existing = parseGalleryStr(caseForm.gallery);
+                                  const newGallery = [...existing, ...results].filter(Boolean).join(', ');
+                                  setCaseForm({ ...caseForm, gallery: newGallery });
+                                }
+                                e.target.value = '';
+                              }}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                    <div>
+                      <label htmlFor="caseTags" className="block text-sm text-gray-400 mb-1">
+                        Tags (Separe por vírgulas)
+                      </label>
+                      <input
+                        id="caseTags"
+                        type="text"
+                        value={caseForm.tags}
+                        onChange={(e) => setCaseForm({ ...caseForm, tags: e.target.value })}
+                        className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
+                        placeholder="Ex: Inovação, Transformação..."
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="technologies" className="block text-sm text-gray-400 mb-1">
+                        Tecnologias (Separe por vírgulas)
+                      </label>
+                      <input
+                        id="technologies"
+                        type="text"
+                        value={caseForm.technologies}
+                        onChange={(e) => setCaseForm({ ...caseForm, technologies: e.target.value })}
+                        className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
+                        placeholder="Ex: React, Node.js, AWS..."
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -1050,27 +1301,31 @@ export default function DashboardPage() {
                       <input id="partnerName" required type="text" value={partnerForm.name} onChange={(e) => setPartnerForm({ ...partnerForm, name: e.target.value })} className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none" placeholder="Ex: Microsoft" />
                     </div>
                     <div>
-                      <label htmlFor="partnerImage" className="block text-sm text-gray-400 mb-1">URL ou Upload (Logo sem fundo)</label>
-                      <div className="flex gap-2 items-center">
-                        <input id="partnerImage" required type="text" value={partnerForm.image} onChange={(e) => setPartnerForm({ ...partnerForm, image: e.target.value })} className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none" placeholder="https://..." />
-                        <label className="bg-[#67A7D5]/20 text-[#67A7D5] px-4 py-2 rounded-lg cursor-pointer hover:bg-[#67A7D5]/30 transition-colors whitespace-nowrap text-sm font-bold">
-                          Upload
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                if (file.size > 2 * 1024 * 1024) return alert('Máximo de 2MB!');
-                                const reader = new FileReader();
-                                reader.onloadend = () => setPartnerForm({ ...partnerForm, image: reader.result as string });
-                                reader.readAsDataURL(file);
-                              }
-                            }}
-                          />
-                        </label>
-                      </div>
+                      <span className="block text-sm text-gray-400 mb-1">URL ou Upload (Logo sem fundo)</span>
+                      {partnerForm.image ? (
+                        <div className="relative w-full h-32 bg-[#010D13] rounded-lg border border-gray-700 flex items-center justify-center overflow-hidden p-4">
+                          <img src={partnerForm.image} alt="Preview" className="max-w-full max-h-full object-contain" />
+                          <button type="button" onClick={() => setPartnerForm({ ...partnerForm, image: '' })} className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shadow-lg text-sm transition-colors">✕</button>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2 items-center">
+                          <input id="partnerImage" required={!partnerForm.image} type="text" value={partnerForm.image} onChange={(e) => setPartnerForm({ ...partnerForm, image: e.target.value })} className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none" placeholder="https://..." />
+                          <label className="bg-[#67A7D5]/20 text-[#67A7D5] px-4 py-2 rounded-lg cursor-pointer hover:bg-[#67A7D5]/30 transition-colors whitespace-nowrap text-sm font-bold">
+                            Upload
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={async (e) => {
+                                const files = Array.from(e.target.files || []);
+                                const results = await processFiles(files);
+                                if (results.length > 0) setPartnerForm({ ...partnerForm, image: results[0] });
+                                e.target.value = '';
+                              }}
+                            />
+                          </label>
+                        </div>
+                      )}
                     </div>
                     <div className="md:col-span-2 flex items-center gap-2 mt-2">
                       <input type="checkbox" id="isFeaturedPartner" checked={partnerForm.isFeatured} onChange={(e) => setPartnerForm({ ...partnerForm, isFeatured: e.target.checked })} className="w-4 h-4 accent-primary" />

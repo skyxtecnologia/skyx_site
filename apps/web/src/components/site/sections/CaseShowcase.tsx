@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { api } from '../../../lib/api';
 
@@ -16,13 +17,13 @@ interface Project {
 const translations = {
   PT: {
     title: 'CASES SKYX',
-    button: 'Explore o futuro',
+    button: 'Ver todos os cases',
     emptyMsg: 'Novos cases de sucesso serão publicados em breve.',
     loadingMsg: 'Carregando projetos...',
   },
   EN: {
     title: 'SKYX CASES',
-    button: 'Explore the future',
+    button: 'View all cases',
     emptyMsg: 'New success cases will be published soon.',
     loadingMsg: 'Loading projects...',
   },
@@ -115,12 +116,12 @@ export function CaseShowcase({ title, projects, lang = 'PT' }: CaseShowcaseProps
 
   return (
     <div
-      id="showcase"
+      id="cases"
       style={{
         width: '100%',
         minHeight: '100vh',
-        paddingTop: 60,
-        paddingBottom: 60,
+        paddingTop: 40,
+        paddingBottom: 40,
         background: 'white',
         overflow: 'hidden',
         display: 'flex',
@@ -138,7 +139,7 @@ export function CaseShowcase({ title, projects, lang = 'PT' }: CaseShowcaseProps
           flexDirection: 'column',
           justifyContent: 'space-between',
           alignItems: 'center',
-          gap: 60,
+          gap: 32,
         }}
       >
         {/* Título Principal */}
@@ -191,7 +192,7 @@ export function CaseShowcase({ title, projects, lang = 'PT' }: CaseShowcaseProps
                   display: 'flex',
                   flexWrap: 'wrap',
                   alignContent: 'center',
-                  minHeight: 500,
+                  minHeight: 400,
                 }}
               >
                 {/* Elementos Laterais (Anteriores e Próximos) */}
@@ -403,57 +404,6 @@ export function CaseShowcase({ title, projects, lang = 'PT' }: CaseShowcaseProps
                             {currentProject.description}
                           </div>
                         </div>
-
-                        {/* Botão Explore */}
-                        <a
-                          href={currentProject.link || '#'}
-                          target={currentProject.link ? '_blank' : '_self'}
-                          rel="noreferrer"
-                          className="group"
-                          style={{
-                            alignSelf: 'stretch',
-                            height: 66,
-                            paddingLeft: 24,
-                            paddingRight: 24,
-                            paddingTop: 10,
-                            paddingBottom: 10,
-                            borderRadius: 12,
-                            outline: '1px #014263 solid',
-                            outlineOffset: '-1px',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            gap: 10,
-                            display: 'inline-flex',
-                            textDecoration: 'none',
-                            transition: 'all 0.3s',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = '#014263';
-                            const child = e.currentTarget.firstChild as HTMLElement;
-                            if (child) child.style.color = 'white';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'transparent';
-                            const child = e.currentTarget.firstChild as HTMLElement;
-                            if (child) child.style.color = '#014263';
-                          }}
-                        >
-                          <div
-                            style={{
-                              textAlign: 'center',
-                              color: '#014263',
-                              fontSize: 'clamp(18px, 4vw, 24px)',
-                              fontFamily: "'Roboto', sans-serif",
-                              fontWeight: '400',
-                              lineHeight: '1.2',
-                              letterSpacing: 0.72,
-                              wordWrap: 'break-word',
-                              transition: 'color 0.3s',
-                            }}
-                          >
-                            {t.button}
-                          </div>
-                        </a>
                       </div>
                     </motion.div>
                   </AnimatePresence>
@@ -480,6 +430,22 @@ export function CaseShowcase({ title, projects, lang = 'PT' }: CaseShowcaseProps
                 </div>
               </div>
             )}
+
+            {/* Botão Ver Todos os Cases */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="flex justify-center w-full"
+            >
+              <Link
+                href="/cases"
+                className="group border border-[#014263] text-[#014263] px-6 py-2.5 rounded-lg text-sm font-roboto font-medium hover:bg-[#014263] hover:text-white transition-colors duration-300 shadow-sm"
+              >
+                {t.button}
+              </Link>
+            </motion.div>
           </>
         )}
       </div>

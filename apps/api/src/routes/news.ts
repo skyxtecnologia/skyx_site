@@ -33,9 +33,9 @@ router.use(async (req, res, next) => {
 // CRIAR nova notícia
 router.post('/', async (req, res, next) => {
     try {
-        const { title, description, image, link, isFeatured } = req.body;
+        const { title, description, image, link, isFeatured, content, tags } = req.body;
         const newNews = await prisma.news.create({
-            data: { title, description, image: image || null, link: link || null, isFeatured: isFeatured || false },
+            data: { title, description, image: image || null, link: link || null, isFeatured: isFeatured || false, content: content || null, tags: tags || null },
         });
         res.json(newNews);
     } catch (error) {
@@ -47,10 +47,10 @@ router.post('/', async (req, res, next) => {
 router.put('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { title, description, image, link, isFeatured } = req.body;
+        const { title, description, image, link, isFeatured, content, tags } = req.body;
         const updatedNews = await prisma.news.update({
             where: { id },
-            data: { title, description, image, link, isFeatured },
+            data: { title, description, image, link, isFeatured, content, tags },
         });
         res.json(updatedNews);
     } catch (error) {

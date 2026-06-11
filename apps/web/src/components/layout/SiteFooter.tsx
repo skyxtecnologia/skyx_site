@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 const translations = {
   PT: {
-    nav: ['Sobre nós', 'Cases', 'Blog', 'Contato', 'Streaming'],
+    nav: ['Sobre nós', 'Serviços', 'Cases', 'Blog', 'Contato', 'Streaming'],
     pillars: [
       '● DESENVOVIMENTO E INOVAÇÃO',
       '● EDUCAÇÃO E ACESSIBILIDADE',
@@ -16,7 +16,7 @@ const translations = {
     privacy: 'Política de privacidade',
   },
   EN: {
-    nav: ['About Us', 'Cases', 'Blog', 'Contact', 'Streaming'],
+    nav: ['About Us', 'Services', 'Cases', 'Blog', 'Contact', 'Streaming'],
     pillars: [
       '● DEVELOPMENT AND INNOVATION',
       '● EDUCATION AND ACCESSIBILITY',
@@ -39,6 +39,8 @@ export function SiteFooter({ lang = 'PT' }: FooterProps) {
   const sectionMap: Record<string, string> = {
     'Sobre nós': 'about',
     'About Us': 'about',
+    Serviços: 'servicos',
+    Services: 'servicos',
     Cases: 'cases',
     Blog: 'news',
     Contato: 'contato',

@@ -33,14 +33,19 @@ router.use(async (req, res, next) => {
 // CRIAR novo case
 router.post('/', async (req, res, next) => {
     try {
-        const { title, description, image, link, isFeatured } = req.body;
+        const { title, description, image, link, isFeatured, year, client, tags, technologies, gallery } = req.body;
         const newCase = await prisma.case.create({
             data: {
                 title,
                 description,
-                image: image || null, // Transforma texto vazio em null
+                image: image || null,
                 link: link || null,
-                isFeatured: isFeatured || false
+                isFeatured: isFeatured || false,
+                year: year || null,
+                client: client || null,
+                tags: tags || null,
+                technologies: technologies || null,
+                gallery: gallery || null
             },
         });
         res.json(newCase);
@@ -53,10 +58,10 @@ router.post('/', async (req, res, next) => {
 router.put('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { title, description, image, link, isFeatured } = req.body;
+        const { title, description, image, link, isFeatured, year, client, tags, technologies, gallery } = req.body;
         const updatedCase = await prisma.case.update({
             where: { id },
-            data: { title, description, image, link, isFeatured },
+            data: { title, description, image, link, isFeatured, year, client, tags, technologies, gallery },
         });
         res.json(updatedCase);
     } catch (error) {
