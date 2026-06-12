@@ -21,11 +21,16 @@ app.use('/api/auth', (req, res, next) => {
 
 // Middleware
 // CORS dinâmico: evita mismatch de origem quando FRONTEND_URL não é exatamente a origem real usada no browser.
+const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+const frontendUrlWithWww = frontendUrl.includes('://www.') ? frontendUrl : frontendUrl.replace('://', '://www.');
+const frontendUrlWithoutWww = frontendUrl.replace('://www.', '://');
+
 app.use(
   cors({
     origin: (origin, callback) => {
       const allowed = new Set([
-        process.env.FRONTEND_URL || 'http://localhost:3000',
+        frontendUrlWithoutWww,
+        frontendUrlWithWww,
         'http://localhost:3000',
       ]);
 

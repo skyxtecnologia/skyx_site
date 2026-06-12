@@ -4,7 +4,11 @@ import { prismaAdapter } from 'better-auth/adapters/prisma';
 
 const prisma = new PrismaClient();
 
-const isProduction = process.env.NODE_ENV === 'production' || process.env.FRONTEND_URL?.startsWith('https');
+const frontendUrl = process.env.FRONTEND_URL ?? 'http://localhost:3000';
+const frontendUrlWithWww = frontendUrl.includes('://www.') ? frontendUrl : frontendUrl.replace('://', '://www.');
+const frontendUrlWithoutWww = frontendUrl.replace('://www.', '://');
+
+const isProduction = process.env.NODE_ENV === 'production' || frontendUrlWithoutWww.startsWith('https');
 
 export const auth = betterAuth({
   // Mantém Prisma, mas deixa o adapter e configurações alinhados com o esperado pelo Better Auth.
@@ -23,9 +27,11 @@ export const auth = betterAuth({
 
   // Origem confiável do frontend.
   trustedOrigins: [
-    process.env.FRONTEND_URL ?? 'http://localhost:3000',
-    // Garante que o Better Auth aceite a URL com ou sem barra no final
-    process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/` : 'http://localhost:3000/',
+    frontendUrlWithoutWww,
+    `${frontendUrlWithoutWww}/`,
+    frontendUrlWithWww,
+    `${frontendUrlWithWww}/`,
+    'http://localhost:3000',
   ],
 
   // Configuração obrigatória para permitir cookies entre domínios diferentes (Vercel -> Render)
