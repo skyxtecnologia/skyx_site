@@ -33,6 +33,20 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    // Pega a URL do backend nas variáveis (Vercel) ou usa localhost
+    const apiUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    const backendUrl = apiUrl.replace(/\/$/, '');
+
+    return [
+      {
+        // Quando o site chamar /api/...
+        source: '/api/:path*',
+        // A Vercel repassa a chamada invisivelmente para o Render (bypassa bloqueio de cookies)
+        destination: `${backendUrl}/api/:path*`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

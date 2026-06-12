@@ -12,6 +12,21 @@ import contactRouter from './routes/contact.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+const frontendUrlWithWww = frontendUrl.includes('://www.') ? frontendUrl : frontendUrl.replace('://', '://www.');
+const frontendUrlWithoutWww = frontendUrl.replace('://www.', '://');
+
+// FIX: Middleware do Proxy Reverso (Vercel)
+// Corrige o cabeçalho "Host" para que o Better Auth reconheça a origem através do Proxy
+app.use('/api/auth', (req, res, next) => {
+  try {
+    const url = new URL(frontendUrlWithoutWww);
+    req.headers.host = url.host;
+    req.headers['x-forwarded-host'] = url.host;
+  } catch (error) { }
+  next();
+});
+
 // Debugger de Origem (Isso vai imprimir nos logs do Render a URL exata que está chegando)
 app.use('/api/auth', (req, res, next) => {
   console.log(`[AUTH DEBUG] Recebendo requisição de: ${req.headers.origin}`);
@@ -21,10 +36,6 @@ app.use('/api/auth', (req, res, next) => {
 
 // Middleware
 // CORS dinâmico: evita mismatch de origem quando FRONTEND_URL não é exatamente a origem real usada no browser.
-const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-const frontendUrlWithWww = frontendUrl.includes('://www.') ? frontendUrl : frontendUrl.replace('://', '://www.');
-const frontendUrlWithoutWww = frontendUrl.replace('://www.', '://');
-
 app.use(
   cors({
     origin: (origin, callback) => {

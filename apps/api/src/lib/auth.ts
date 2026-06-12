@@ -21,8 +21,8 @@ export const auth = betterAuth({
     enabled: true,
   },
 
-  // Configurações de Host para ambientes de produção (Render)
-  baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3001',
+  // A URL base de Auth deve ser a do próprio site, já que a Vercel atua como Proxy.
+  baseURL: `${frontendUrlWithoutWww}/api/auth`,
   trustHost: true,
 
   // Origem confiável do frontend.
