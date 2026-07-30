@@ -10,6 +10,7 @@ const router = Router();
 const caseSchema = z.object({
     title: z.string().min(1, 'O título é obrigatório.'),
     description: z.string().min(1, 'A descrição é obrigatória.'),
+    summary: z.string().nullable().optional(),
     image: z.string().url('A imagem deve ser uma URL válida.').nullable().optional(),
     link: z.string().url('O link deve ser uma URL válida.').nullable().optional(),
     isFeatured: z.boolean().optional().default(false),
@@ -43,6 +44,7 @@ router.post('/', validateBody(caseSchema), async (req, res, next) => {
         const newCase = await prisma.case.create({
             data: {
                 ...data,
+                summary: data.summary || null,
                 image: data.image || null,
                 link: data.link || null,
                 year: data.year || null,
@@ -68,6 +70,7 @@ router.put('/:id', validateBody(caseSchema), async (req, res, next) => {
             where: { id },
             data: {
                 ...data,
+                summary: data.summary || null,
                 image: data.image || null,
                 link: data.link || null,
                 year: data.year || null,

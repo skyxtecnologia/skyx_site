@@ -25,6 +25,7 @@ interface Case {
   id: string;
   title: string;
   description: string;
+  summary?: string | null;
   image: string | null;
   link: string | null;
   isFeatured: boolean;
@@ -81,6 +82,7 @@ export default function DashboardPage() {
   const [caseForm, setCaseForm] = useState({
     title: '',
     description: '',
+    summary: '',
     image: '',
     link: '',
     isFeatured: false,
@@ -287,7 +289,7 @@ export default function DashboardPage() {
       }
       setShowCaseForm(false);
       setEditingCaseId(null);
-      setCaseForm({ title: '', description: '', image: '', link: '', isFeatured: false, year: '', client: '', tags: '', technologies: '', gallery: '' });
+      setCaseForm({ title: '', description: '', summary: '', image: '', link: '', isFeatured: false, year: '', client: '', tags: '', technologies: '', gallery: '' });
       fetchCases();
     } catch (err) {
       console.error('Erro ao salvar case', err);
@@ -301,6 +303,7 @@ export default function DashboardPage() {
     setCaseForm({
       title: c.title,
       description: c.description,
+      summary: c.summary || '',
       image: c.image || '',
       link: c.link || '',
       isFeatured: c.isFeatured,
@@ -925,7 +928,7 @@ export default function DashboardPage() {
                   type="button"
                   onClick={() => {
                     setEditingCaseId(null);
-                    setCaseForm({ title: '', description: '', image: '', link: '', isFeatured: false, year: '', client: '', tags: '', technologies: '', gallery: '' });
+                    setCaseForm({ title: '', description: '', summary: '', image: '', link: '', isFeatured: false, year: '', client: '', tags: '', technologies: '', gallery: '' });
                     setShowCaseForm(!showCaseForm);
                   }}
                   className="bg-primary hover:bg-primary-dark text-dark font-semibold px-6 py-2 rounded-lg transition-colors flex items-center gap-2"
@@ -1137,6 +1140,18 @@ export default function DashboardPage() {
                         onChange={(e) => setCaseForm({ ...caseForm, technologies: e.target.value })}
                         className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
                         placeholder="Ex: React, Node.js, AWS..."
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label htmlFor="summary" className="block text-sm text-gray-400 mb-1">
+                        Resumo (Para a Landing Page)
+                      </label>
+                      <textarea
+                        id="summary"
+                        value={caseForm.summary}
+                        onChange={(e) => setCaseForm({ ...caseForm, summary: e.target.value })}
+                        className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none min-h-[80px]"
+                        placeholder="Um texto curto (ideal até 200 caracteres) para exibir na vitrine da Home..."
                       />
                     </div>
                     <div className="md:col-span-2">

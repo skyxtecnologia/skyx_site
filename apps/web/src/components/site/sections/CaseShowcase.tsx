@@ -65,12 +65,13 @@ export function CaseShowcase({ title, projects, lang = 'PT' }: CaseShowcaseProps
                 id: string;
                 title: string;
                 description: string;
+                summary?: string | null;
                 image: string | null;
                 link: string | null;
               }) => ({
                 id: c.id,
                 title: c.title,
-                description: c.description,
+                description: c.summary || c.description,
                 image:
                   c.image ||
                   'https://images.unsplash.com/photo-1633356122544-f134ef2944f0?w=600&h=500&fit=crop',

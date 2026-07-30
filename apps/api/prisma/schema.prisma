@@ -85,6 +85,7 @@ model Case {
   id          String   @id @default(cuid())
   title       String
   description String
+  summary     String?
   image       String?
   link        String?
   isFeatured  Boolean  @default(false)

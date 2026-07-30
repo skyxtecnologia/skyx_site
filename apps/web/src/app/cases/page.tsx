@@ -59,6 +59,10 @@ export default function CasesPage() {
     items: string[];
     currentIndex: number;
   } | null>(null);
+  const [activeDescription, setActiveDescription] = useState<{
+    title: string;
+    text: string;
+  } | null>(null);
 
   const nextGalleryItem = () => {
     if (!activeGallery) return;
@@ -218,7 +222,7 @@ export default function CasesPage() {
             </div>
 
             {/* Conteúdo Principal (Alinhado à esquerda) */}
-            <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 flex flex-col pt-16 md:pt-20">
+            <div className="relative z-10 w-full mx-auto px-6 lg:px-12 flex flex-col pt-16 md:pt-20">
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -239,7 +243,7 @@ export default function CasesPage() {
                 </div>
 
                 {/* Título Giga */}
-                <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 font-zen-dots leading-tight drop-shadow-lg">
+                <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 font-zen-dots leading-tight drop-shadow-lg">
                   {c.title}
                 </h2>
 
@@ -267,9 +271,16 @@ export default function CasesPage() {
                 </div>
 
                 {/* Descrição */}
-                <p className="text-base md:text-lg text-gray-300 font-roboto font-light leading-relaxed mb-8 max-w-xl drop-shadow-md line-clamp-4">
+                <p className="text-base md:text-lg text-gray-300 font-roboto font-light leading-relaxed mb-4 max-w-xl drop-shadow-md line-clamp-4">
                   {c.description}
                 </p>
+                <button
+                  type="button"
+                  onClick={() => setActiveDescription({ title: c.title, text: c.description })}
+                  className="text-[#67A7D5] hover:text-white text-sm font-bold font-roboto uppercase tracking-wider mb-8 flex items-center gap-2 transition-colors cursor-pointer"
+                >
+                  Ler mais
+                </button>
 
                 {/* Ação */}
                 {c.link && c.link.trim() !== '' && c.link !== '#' && (
@@ -293,7 +304,7 @@ export default function CasesPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ margin: '-100px' }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="absolute bottom-10 right-6 lg:right-12 z-20 hidden md:flex flex-col gap-3 items-end"
+              className="absolute bottom-10 right-6 lg:right-12 z-20 flex flex-col gap-3 items-end"
             >
               <span className="text-xs font-bold text-gray-400 uppercase tracking-widest pr-1">
                 {t.gallery}
@@ -405,6 +416,32 @@ export default function CasesPage() {
             {/* Indicador de Imagem */}
             <div className="absolute bottom-10 text-white/50 text-sm font-roboto tracking-widest">
               {activeGallery.currentIndex + 1} / {activeGallery.items.length}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal de Texto Completo (Ler Mais) */}
+      <AnimatePresence>
+        {activeDescription && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center backdrop-blur-md p-6 md:p-12"
+          >
+            <div className="relative w-full max-w-3xl bg-[#010D13] border border-white/10 rounded-2xl p-8 md:p-12 shadow-2xl max-h-[85vh] overflow-y-auto">
+              <button
+                type="button"
+                onClick={() => setActiveDescription(null)}
+                className="absolute top-4 right-6 text-white/70 hover:text-white text-3xl transition-colors"
+              >
+                &times;
+              </button>
+              <h3 className="text-2xl md:text-4xl font-bold text-white mb-6 font-zen-dots pr-8">{activeDescription.title}</h3>
+              <div className="text-gray-300 font-roboto text-base md:text-lg leading-relaxed whitespace-pre-wrap">
+                {activeDescription.text}
+              </div>
             </div>
           </motion.div>
         )}
