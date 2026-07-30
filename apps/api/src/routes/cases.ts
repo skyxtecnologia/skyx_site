@@ -1,11 +1,26 @@
 import { Router } from 'express';
-import { auth } from '../lib/auth.js';
-import { fromNodeHeaders } from 'better-auth/node';
+import { z } from 'zod';
 import prisma from '../lib/prisma.js';
+import { requireAuth } from '../middleware/require-auth.js';
+import { validateBody } from '../middleware/validate.js';
 
 const router = Router();
 
-// LISTAR todos os cases (ROTA PÚBLICA - Para a Landing Page)
+// Schemas de Validação (Zod)
+const caseSchema = z.object({
+    title: z.string().min(1, 'O título é obrigatório.'),
+    description: z.string().min(1, 'A descrição é obrigatória.'),
+    image: z.string().url('A imagem deve ser uma URL válida.').nullable().optional(),
+    link: z.string().url('O link deve ser uma URL válida.').nullable().optional(),
+    isFeatured: z.boolean().optional().default(false),
+    year: z.string().nullable().optional(),
+    client: z.string().nullable().optional(),
+    tags: z.string().nullable().optional(),
+    technologies: z.string().nullable().optional(),
+    gallery: z.string().nullable().optional()
+});
+
+// LISTAR todos os cases (ROTA PÚBLICA)
 router.get('/', async (req, res, next) => {
     try {
         const cases = await prisma.case.findMany({
@@ -13,55 +28,54 @@ router.get('/', async (req, res, next) => {
         });
         res.json(cases);
     } catch (error) {
-        next(error); // Repassa o erro para o handler global do Express (evita crash)
+        next(error);
     }
 });
 
-// Middleware de Autenticação: Garante que apenas usuários logados acessem essas rotas
-router.use(async (req, res, next) => {
-    try {
-        const session = await auth.api.getSession({ headers: fromNodeHeaders(req.headers) });
-        if (!session?.user) {
-            return res.status(401).json({ error: 'Não autorizado.' });
-        }
-        next();
-    } catch (error) {
-        return res.status(401).json({ error: 'Não autorizado.' });
-    }
-});
+// Middleware de Autenticação Centralizado
+router.use(requireAuth);
 
-// CRIAR novo case
-router.post('/', async (req, res, next) => {
+// CRIAR
+router.post('/', validateBody(caseSchema), async (req, res, next) => {
     try {
-        const { title, description, image, link, isFeatured, year, client, tags, technologies, gallery } = req.body;
+        const data = req.body as z.infer<typeof caseSchema>;
+        
         const newCase = await prisma.case.create({
             data: {
-                title,
-                description,
-                image: image || null,
-                link: link || null,
-                isFeatured: isFeatured || false,
-                year: year || null,
-                client: client || null,
-                tags: tags || null,
-                technologies: technologies || null,
-                gallery: gallery || null
+                ...data,
+                image: data.image || null,
+                link: data.link || null,
+                year: data.year || null,
+                client: data.client || null,
+                tags: data.tags || null,
+                technologies: data.technologies || null,
+                gallery: data.gallery || null
             },
         });
-        res.json(newCase);
+        res.status(201).json(newCase);
     } catch (error) {
         next(error);
     }
 });
 
-// ATUALIZAR case (Usado para alterar o destaque)
-router.put('/:id', async (req, res, next) => {
+// ATUALIZAR
+router.put('/:id', validateBody(caseSchema), async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { title, description, image, link, isFeatured, year, client, tags, technologies, gallery } = req.body;
+        const data = req.body as z.infer<typeof caseSchema>;
+        
         const updatedCase = await prisma.case.update({
             where: { id },
-            data: { title, description, image, link, isFeatured, year, client, tags, technologies, gallery },
+            data: {
+                ...data,
+                image: data.image || null,
+                link: data.link || null,
+                year: data.year || null,
+                client: data.client || null,
+                tags: data.tags || null,
+                technologies: data.technologies || null,
+                gallery: data.gallery || null
+            },
         });
         res.json(updatedCase);
     } catch (error) {
@@ -69,7 +83,7 @@ router.put('/:id', async (req, res, next) => {
     }
 });
 
-// DELETAR case
+// DELETAR
 router.delete('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
