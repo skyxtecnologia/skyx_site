@@ -383,7 +383,7 @@ export function CaseShowcase({ title, projects, lang = 'PT' }: CaseShowcaseProps
                             style={{
                               width: '100%',
                               color: '#014263',
-                              fontSize: 'clamp(22px, 5vw, 28px)',
+                              fontSize: 'clamp(18px, 4vw, 24px)',
                               fontFamily: "'Zen Dots', sans-serif",
                               fontWeight: '400',
                               wordWrap: 'break-word',
@@ -395,7 +395,7 @@ export function CaseShowcase({ title, projects, lang = 'PT' }: CaseShowcaseProps
                             style={{
                               width: '100%',
                               color: '#5B5B5B',
-                              fontSize: 'clamp(16px, 4vw, 20px)',
+                              fontSize: 'clamp(14px, 3vw, 16px)',
                               fontFamily: "'Roboto', sans-serif",
                               fontWeight: '300',
                               lineHeight: '1.5',
@@ -442,7 +442,7 @@ export function CaseShowcase({ title, projects, lang = 'PT' }: CaseShowcaseProps
             >
               <Link
                 href="/cases"
-                className="group border border-[#014263] text-[#014263] px-6 py-2.5 rounded-lg text-sm font-roboto font-medium hover:bg-[#014263] hover:text-white transition-colors duration-300 shadow-sm"
+                className="group border border-[#014263] text-[#014263] px-8 py-3 rounded-lg text-base font-roboto font-medium hover:bg-[#014263] hover:text-white transition-colors duration-300 shadow-sm"
               >
                 {t.button}
               </Link>
