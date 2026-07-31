@@ -10,6 +10,7 @@ interface Case {
   id: string;
   title: string;
   description: string;
+  summary?: string | null;
   image: string | null;
   link: string | null;
   year?: string | null;
@@ -109,6 +110,7 @@ export default function CasesPage() {
           id: c.id,
           title: c.title,
           description: c.description,
+          summary: c.summary,
           image: c.image,
           link: c.link,
           year: c.year || '2024',
@@ -211,13 +213,13 @@ export default function CasesPage() {
                 }
                 alt={c.title}
                 fill
-                className="object-cover opacity-80"
+                className="object-cover opacity-90"
                 unoptimized
               />
-              {/* Degradê cobrindo a esquerda para o texto ficar super legível */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#010D13] via-[#010D13]/80 to-transparent" />
-              {/* Degradê embaixo e em cima */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#010D13] via-transparent to-transparent opacity-80" />
+              {/* Degradê cobrindo a esquerda para o texto ficar super legível, deixando a direita livre */}
+              <div className="absolute inset-y-0 left-0 w-full md:w-3/4 lg:w-2/3 bg-gradient-to-r from-[#010D13] via-[#010D13]/80 to-transparent" />
+              
+              {/* Leve escurecimento geral para manter o contraste do botão e da galeria */}
               <div className="absolute inset-0 bg-black/10" />
             </div>
 
@@ -272,7 +274,7 @@ export default function CasesPage() {
 
                 {/* Descrição */}
                 <p className="text-base md:text-lg text-gray-300 font-roboto font-light leading-relaxed mb-4 max-w-xl drop-shadow-md line-clamp-4">
-                  {c.description}
+                  {c.summary || c.description}
                 </p>
                 <button
                   type="button"
@@ -302,7 +304,7 @@ export default function CasesPage() {
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ margin: '-100px' }}
+              viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
               className="absolute bottom-10 right-6 lg:right-12 z-20 flex flex-col gap-3 items-end"
             >
