@@ -1,11 +1,11 @@
 'use client';
 
+import { api } from '@/lib/api';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
 
 interface News {
   id: string;

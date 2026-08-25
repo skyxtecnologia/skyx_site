@@ -25,10 +25,20 @@ const translations = {
     successMessage: 'Message sent successfully! We will contact you soon.',
     errorMessage: 'An error occurred while sending. Please try again.',
   },
+  ES: {
+    title: 'Ponte en contacto',
+    description:
+      'Comparte tu propuesta y construiremos soluciones que contribuyan al desarrollo de personas, negocios y ciudades.',
+    emailPlaceholder: 'Correo electrónico',
+    submit: 'enviar',
+    messagePlaceholder: 'Describe tu idea, proyecto, asociación o necesidad…',
+    successMessage: '¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.',
+    errorMessage: 'Se produjo un error al enviar. Inténtalo de nuevo.',
+  },
 } as const;
 
 interface ContactSectionProps {
-  lang?: 'PT' | 'EN';
+  lang?: 'PT' | 'EN' | 'ES';
 }
 
 export function ContactSection({ lang = 'PT' }: ContactSectionProps) {
@@ -67,7 +77,7 @@ export function ContactSection({ lang = 'PT' }: ContactSectionProps) {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-50px' }}
+        viewport={{ once: false, margin: '-50px' }}
         transition={{ duration: 0.6 }}
         className="flex flex-col justify-center items-center p-4 gap-4 w-full"
       >
@@ -125,11 +135,8 @@ export function ContactSection({ lang = 'PT' }: ContactSectionProps) {
             <button
               type="submit"
               disabled={status === 'loading'}
-              className="w-full sm:w-auto px-6 py-2.5 hover:brightness-110 hover:shadow-lg transition-all duration-300"
+              className="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-[#013149] to-[#000d13] text-white rounded-xl border border-white/10 hover:shadow-[inset_0_0_20px_rgba(103,167,213,0.5)] hover:border-[#67a7d5]/60 hover:brightness-110 transition-all duration-300"
               style={{
-                background: 'linear-gradient(85deg, #014263 0%, #67A7D5 100%)',
-                borderRadius: '6px',
-                color: 'white',
                 fontSize: 'clamp(14px, 4vw, 16px)',
                 fontFamily: "'Roboto', sans-serif",
                 fontWeight: 400,

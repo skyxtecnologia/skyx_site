@@ -82,10 +82,50 @@ const translations = {
       },
     ],
   },
+  ES: {
+    title: 'Qué hacemos',
+    cards: [
+      {
+        title: 'Experiencias Inmersivas y Educación Tecnológica',
+        description:
+          'Experiencias inmersivas e interactivas que unen tecnología, aprendizaje e innovación.',
+        alt: 'Experiencias inmersivas',
+      },
+      {
+        title: 'Ingeniería de\nSoftware',
+        description:
+          'Creamos sistemas, sitios y aplicaciones a medida, enfocados en rendimiento y escalabilidad.',
+        alt: 'Ingeniería de software',
+      },
+      {
+        title: 'Diseño y Experiencia',
+        description:
+          'Interfaces modernas e intuitivas, con un enfoque en usabilidad e impacto visual.',
+        alt: 'Diseño y experiencia',
+      },
+      {
+        title: 'Tecnología para Seguridad e Investigación',
+        description: '',
+        alt: 'Seguridad e investigación',
+      },
+      {
+        title: 'Innovación y Soluciones Inteligentes',
+        description:
+          'Creando soluciones tecnológicas para empresas y ciudades, incluyendo automatización de procesos, análisis de datos y proyectos orientados a entornos inteligentes.',
+        alt: 'Innovación y soluciones',
+      },
+      {
+        title: 'Modelado y Simulación 3D',
+        description:
+          'Construcción de entornos virtuales, reconstrucción de escenarios y simulaciones técnicas para análisis, presentación y apoyo a la toma de decisiones.',
+        alt: 'Modelado 3D',
+      },
+    ],
+  },
 } as const;
 
 interface CasesSectionProps {
-  lang?: 'PT' | 'EN';
+  lang?: 'PT' | 'EN' | 'ES';
 }
 
 export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
@@ -119,7 +159,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
+          viewport={{ once: false, margin: '-50px' }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
           className="px-4 py-2 rounded-md inline-flex justify-center items-center"
         >
@@ -141,7 +181,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-50px' }}
+          viewport={{ once: false, margin: '-50px' }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 w-full justify-items-center"
         >
           {/* Card 1: Imersivas */}

@@ -41,7 +41,7 @@ export function TechSection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Stack Tecnológico</h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
@@ -55,7 +55,7 @@ export function TechSection() {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
+          viewport={{ once: false }}
         >
           {technologies.map((tech, index) => (
             <motion.div

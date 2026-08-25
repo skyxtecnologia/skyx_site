@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
-import { Poppins, Roboto, Zen_Dots } from 'next/font/google';
+import { Poppins, Roboto, Roboto_Condensed, Zen_Dots } from 'next/font/google';
 import './globals.css';
+import { LanguageProvider } from '@/contexts/LanguageContext';
 
 const poppins = Poppins({
   weight: ['300', '400', '500', '600', '700', '800'],
@@ -9,9 +10,15 @@ const poppins = Poppins({
 });
 
 const roboto = Roboto({
-  weight: ['400', '500', '700'],
+  weight: ['300', '400', '500', '700'],
   subsets: ['latin'],
   variable: '--font-roboto',
+});
+
+const robotoCondensed = Roboto_Condensed({
+  weight: ['300', '400', '700'],
+  subsets: ['latin'],
+  variable: '--font-roboto-condensed',
 });
 
 const zenDots = Zen_Dots({
@@ -42,12 +49,12 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body
-        className={`${poppins.variable} ${roboto.variable} ${zenDots.variable} bg-dark text-white antialiased`}
+        className={`${poppins.variable} ${roboto.variable} ${robotoCondensed.variable} ${zenDots.variable} bg-dark text-white antialiased`}
         style={{
           fontFamily: 'var(--font-poppins), sans-serif',
         }}
       >
-        {children}
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

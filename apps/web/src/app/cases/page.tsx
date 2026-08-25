@@ -1,10 +1,10 @@
 'use client';
 
+import { api } from '@/lib/api';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
 
 interface Case {
   id: string;
@@ -218,7 +218,7 @@ export default function CasesPage() {
               />
               {/* Degradê cobrindo a esquerda para o texto ficar super legível, deixando a direita livre */}
               <div className="absolute inset-y-0 left-0 w-full md:w-3/4 lg:w-2/3 bg-gradient-to-r from-[#010D13] via-[#010D13]/80 to-transparent" />
-              
+
               {/* Leve escurecimento geral para manter o contraste do botão e da galeria */}
               <div className="absolute inset-0 bg-black/10" />
             </div>
@@ -440,7 +440,9 @@ export default function CasesPage() {
               >
                 &times;
               </button>
-              <h3 className="text-2xl md:text-4xl font-bold text-white mb-6 font-zen-dots pr-8">{activeDescription.title}</h3>
+              <h3 className="text-2xl md:text-4xl font-bold text-white mb-6 font-zen-dots pr-8">
+                {activeDescription.title}
+              </h3>
               <div className="text-gray-300 font-roboto text-base md:text-lg leading-relaxed whitespace-pre-wrap">
                 {activeDescription.text}
               </div>

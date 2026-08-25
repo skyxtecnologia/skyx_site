@@ -8,21 +8,27 @@ import { api } from '../../../lib/api';
 
 const translations = {
   PT: {
-    title: 'Ultimas noticias',
+    title: 'ÚLTIMAS NOTÍCIAS',
     emptyMsg: 'Novas notícias serão publicadas em breve.',
     loadingMsg: 'Carregando notícias...',
     viewAll: 'Ver todas as notícias',
   },
   EN: {
-    title: 'Latest news',
+    title: 'LATEST NEWS',
     emptyMsg: 'New articles will be published soon.',
     loadingMsg: 'Loading news...',
     viewAll: 'View all news',
   },
+  ES: {
+    title: 'ÚLTIMAS NOTICIAS',
+    emptyMsg: 'Próximamente se publicarán nuevas noticias.',
+    loadingMsg: 'Cargando noticias...',
+    viewAll: 'Ver todas las noticias',
+  },
 } as const;
 
 interface NewsSectionProps {
-  lang?: 'PT' | 'EN';
+  lang?: 'PT' | 'EN' | 'ES';
 }
 
 export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
@@ -81,24 +87,23 @@ export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
   return (
     <section
       id="news"
-      className="relative w-full min-h-screen bg-white overflow-hidden flex flex-col items-center py-24"
+      className="relative w-full min-h-[80vh] bg-white overflow-hidden flex flex-col items-center py-24"
     >
-      <div className="w-full max-w-[1034px] flex flex-col items-center justify-center gap-8 px-4 md:px-6">
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-50 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="w-full max-w-7xl flex flex-col items-center justify-center gap-12 px-6 relative z-10">
         {/* Cabeçalho */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
+          viewport={{ once: false, margin: '-50px' }}
           transition={{ duration: 0.6 }}
-          className="px-2 py-1 rounded-md inline-flex justify-center items-center gap-[10px]"
+          className="text-center"
         >
           <h2
-            className="text-center uppercase break-words"
+            className="text-center break-words font-zen-dots text-[#014263] mb-4"
             style={{
-              color: '#013149',
-              fontSize: 'clamp(24px, 5vw, 32px)',
-              fontFamily: "'Roboto Condensed', sans-serif",
-              fontWeight: 400,
+              fontSize: 'clamp(32px, 5vw, 48px)',
             }}
           >
             {t.title}
@@ -107,11 +112,11 @@ export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
 
         {isLoading ? (
           <div className="flex justify-center items-center w-full min-h-[200px]">
-            <p className="text-[#013149] text-lg font-roboto animate-pulse">{t.loadingMsg}</p>
+            <p className="text-gray-400 text-lg font-roboto animate-pulse">{t.loadingMsg}</p>
           </div>
         ) : finalNews.length === 0 ? (
           <div className="flex justify-center items-center w-full min-h-[200px]">
-            <p className="text-[#5B5B5B] text-lg font-roboto font-light">{t.emptyMsg}</p>
+            <p className="text-gray-500 text-lg font-roboto font-light">{t.emptyMsg}</p>
           </div>
         ) : (
           <>
@@ -119,9 +124,8 @@ export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
               variants={containerVariants}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, margin: '-50px' }}
-              className="flex flex-wrap justify-center w-full"
-              style={{ gap: '24px' }}
+              viewport={{ once: false, margin: '-50px' }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
             >
               {/* Exibe no máximo 6 notícias */}
               {finalNews.slice(0, 6).map((news) => {
@@ -132,12 +136,12 @@ export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
                     target={news.link && news.link !== '#' ? '_blank' : '_self'}
                     rel="noreferrer"
                     variants={cardVariants}
-                    className="group w-full max-w-[340px] flex flex-col justify-start items-start cursor-pointer transition-all duration-300"
+                    className="group w-full flex flex-col justify-start items-start cursor-pointer transition-all duration-500 bg-[#010D13] border border-[#013149] rounded-3xl p-6 hover:bg-[#011c2b] hover:border-[#67a7d5]/80 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(1,66,99,0.3)]"
                   >
                     {/* Imagem */}
                     <div
-                      className="w-full rounded-2xl relative overflow-hidden shrink-0 shadow-sm mb-4"
-                      style={{ aspectRatio: '4/3', background: '#041E2B' }}
+                      className="w-full rounded-2xl relative overflow-hidden shrink-0 shadow-lg mb-6 border border-white/5"
+                      style={{ aspectRatio: '4/3', background: '#020c1b' }}
                     >
                       <Image
                         src={
@@ -151,7 +155,7 @@ export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
                       />
                       {news.isFeatured && (
                         <div className="absolute top-3 left-3">
-                          <span className="px-3 py-1 bg-white/90 backdrop-blur-md text-[#013149] text-[10px] font-bold uppercase tracking-widest rounded-full shadow-sm">
+                          <span className="px-3 py-1 bg-[#014263]/90 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest rounded-full shadow-sm">
                             Destaque
                           </span>
                         </div>
@@ -159,24 +163,21 @@ export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
                     </div>
 
                     {/* Textos */}
-                    <div className="w-full flex flex-col justify-start items-start px-2">
+                    <div className="w-full flex flex-col justify-start items-start">
                       <h3
-                        className="w-full break-words text-[#014263] group-hover:text-[#67A7D5] transition-colors duration-300 line-clamp-2 mb-2"
+                        className="w-full break-words text-white transition-colors duration-300 line-clamp-2 mb-3 group-hover:text-[#67a7d5]"
                         style={{
-                          fontSize: 'clamp(16px, 4vw, 20px)',
+                          fontSize: 'clamp(18px, 4vw, 22px)',
                           fontFamily: "'Zen Dots', sans-serif",
-                          fontWeight: 400,
-                          lineHeight: '1.3',
                         }}
                       >
                         {news.title}
                       </h3>
                       <p
-                        className="w-full break-words line-clamp-3 text-[#5B5B5B]"
+                        className="w-full break-words line-clamp-3 text-gray-300 group-hover:text-white transition-colors duration-300"
                         style={{
-                          fontSize: 'clamp(13px, 3vw, 15px)',
+                          fontSize: 'clamp(14px, 3vw, 15px)',
                           fontFamily: "'Roboto', sans-serif",
-                          fontWeight: 300,
                           lineHeight: '1.6',
                         }}
                       >
@@ -192,13 +193,13 @@ export function NewsSection({ lang = 'PT' }: NewsSectionProps) {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="mt-6 flex justify-center w-full"
+              className="mt-8 flex justify-center w-full"
             >
               <Link
                 href="/noticias"
-                className="group border border-[#014263] text-[#014263] px-6 py-2.5 rounded-lg text-sm font-roboto font-medium hover:bg-[#014263] hover:text-white transition-colors duration-300 shadow-sm"
+                className="flex items-center justify-center px-8 py-4 bg-gradient-to-r from-[#013149] to-[#000d13] text-white rounded-xl font-roboto font-normal tracking-[0.48px] hover:shadow-[inset_0_0_20px_rgba(103,167,213,0.5)] hover:border-[#67a7d5]/60 hover:brightness-110 transition-all border border-white/10 text-lg"
               >
                 {t.viewAll}
               </Link>

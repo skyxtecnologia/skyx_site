@@ -45,7 +45,7 @@ export function TechGrid({ cards, title, description }: TechGridProps) {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
           >
             {title && <h2 className="text-4xl md:text-5xl font-bold mb-6 text-dark">{title}</h2>}
             {description && (
@@ -59,7 +59,7 @@ export function TechGrid({ cards, title, description }: TechGridProps) {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
+          viewport={{ once: false }}
         >
           {cards.map((card) => (
             <motion.div

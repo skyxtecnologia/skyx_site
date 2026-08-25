@@ -1,34 +1,45 @@
 'use client';
 
 import { HomeHero } from '@/components/home';
-import { SiteFooter } from '@/components/layout';
+import { SiteFooter, SiteHeader } from '@/components/layout';
 import {
   AboutSection,
+  CapsuleSection,
   CaseShowcase,
-  CasesSection,
   ContactSection,
   NewsSection,
+  PartnersBanner,
+  SolutionsSection,
 } from '@/components/site/sections';
-import { useState } from 'react';
+import { ScrollProgress } from '@/components/ui/ScrollProgress';
+import { ScrollToTopButton } from '@/components/ui/ScrollToTopButton';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Home() {
-  const [lang, setLang] = useState<'PT' | 'EN'>('PT');
+  const { lang, setLang } = useLanguage();
 
   return (
     <>
+      <SiteHeader />
+      <ScrollProgress />
+      <ScrollToTopButton />
       <HomeHero lang={lang} setLang={setLang} />
 
-      <AboutSection lang={lang} />
+      <main className="flex min-h-screen flex-col items-center justify-between">
+        <AboutSection lang={lang} />
+        <PartnersBanner />
 
-      <CasesSection lang={lang} />
+        {/* Novas Seções de Imersão e Soluções */}
+        <CapsuleSection />
+        <SolutionsSection />
 
-      <CaseShowcase lang={lang} />
+        {/* Cases */}
+        <CaseShowcase lang={lang} />
 
-      <NewsSection lang={lang} />
-
-      <ContactSection lang={lang} />
-
-      <SiteFooter lang={lang} />
+        <NewsSection lang={lang} />
+        <ContactSection lang={lang} />
+      </main>
+      <SiteFooter />
     </>
   );
 }

@@ -1,8 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { api } from '../../lib/api';
 import { authClient } from '../../lib/auth-client';
@@ -289,7 +289,19 @@ export default function DashboardPage() {
       }
       setShowCaseForm(false);
       setEditingCaseId(null);
-      setCaseForm({ title: '', description: '', summary: '', image: '', link: '', isFeatured: false, year: '', client: '', tags: '', technologies: '', gallery: '' });
+      setCaseForm({
+        title: '',
+        description: '',
+        summary: '',
+        image: '',
+        link: '',
+        isFeatured: false,
+        year: '',
+        client: '',
+        tags: '',
+        technologies: '',
+        gallery: '',
+      });
       fetchCases();
     } catch (err) {
       console.error('Erro ao salvar case', err);
@@ -327,7 +339,15 @@ export default function DashboardPage() {
       }
       setShowNewsForm(false);
       setEditingNewsId(null);
-      setNewsForm({ title: '', description: '', image: '', link: '', isFeatured: false, content: '', tags: '' });
+      setNewsForm({
+        title: '',
+        description: '',
+        image: '',
+        link: '',
+        isFeatured: false,
+        content: '',
+        tags: '',
+      });
       fetchNews();
     } catch (err) {
       console.error('Erro ao salvar notícia', err);
@@ -454,7 +474,10 @@ export default function DashboardPage() {
             <div className="w-12 h-12 rounded-full border-4 border-[#014263] border-t-[#67A7D5] animate-spin mb-2" />
             <p className="text-white font-bold text-lg">Processando mídia...</p>
             <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden mt-2">
-              <div className="bg-[#67A7D5] h-full transition-all duration-300 ease-out" style={{ width: `${uploadProgress}%` }} />
+              <div
+                className="bg-[#67A7D5] h-full transition-all duration-300 ease-out"
+                style={{ width: `${uploadProgress}%` }}
+              />
             </div>
             <p className="text-[#67A7D5] font-semibold text-sm">{uploadProgress}%</p>
           </div>
@@ -690,7 +713,15 @@ export default function DashboardPage() {
                   type="button"
                   onClick={() => {
                     setEditingNewsId(null);
-                    setNewsForm({ title: '', description: '', image: '', link: '', isFeatured: false, content: '', tags: '' });
+                    setNewsForm({
+                      title: '',
+                      description: '',
+                      image: '',
+                      link: '',
+                      isFeatured: false,
+                      content: '',
+                      tags: '',
+                    });
                     setShowNewsForm(!showNewsForm);
                   }}
                   className="bg-primary hover:bg-primary-dark text-dark font-semibold px-6 py-2 rounded-lg transition-colors flex items-center gap-2"
@@ -719,7 +750,9 @@ export default function DashboardPage() {
                   onSubmit={handleCreateNews}
                   className="bg-[#010D13]/80 p-6 rounded-2xl border border-[#014263]/30 shadow-lg space-y-4"
                 >
-                  <h3 className="text-lg font-bold text-white mb-2">{editingNewsId ? 'Editar Notícia' : 'Nova Notícia'}</h3>
+                  <h3 className="text-lg font-bold text-white mb-2">
+                    {editingNewsId ? 'Editar Notícia' : 'Nova Notícia'}
+                  </h3>
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="newsTitle" className="block text-sm text-gray-400 mb-1">
@@ -741,8 +774,18 @@ export default function DashboardPage() {
                       </span>
                       {newsForm.image ? (
                         <div className="relative w-full h-32 bg-[#010D13] rounded-lg border border-gray-700 flex items-center justify-center overflow-hidden">
-                          <img src={newsForm.image} alt="Preview" className="max-w-full max-h-full object-contain" />
-                          <button type="button" onClick={() => setNewsForm({ ...newsForm, image: '' })} className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shadow-lg text-sm transition-colors">✕</button>
+                          <img
+                            src={newsForm.image}
+                            alt="Preview"
+                            className="max-w-full max-h-full object-contain"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setNewsForm({ ...newsForm, image: '' })}
+                            className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shadow-lg text-sm transition-colors"
+                          >
+                            ✕
+                          </button>
                         </div>
                       ) : (
                         <div className="flex gap-2 items-center">
@@ -763,7 +806,8 @@ export default function DashboardPage() {
                               onChange={async (e) => {
                                 const files = Array.from(e.target.files || []);
                                 const results = await processFiles(files);
-                                if (results.length > 0) setNewsForm({ ...newsForm, image: results[0] });
+                                if (results.length > 0)
+                                  setNewsForm({ ...newsForm, image: results[0] });
                                 e.target.value = '';
                               }}
                             />
@@ -830,7 +874,10 @@ export default function DashboardPage() {
                         onChange={(e) => setNewsForm({ ...newsForm, isFeatured: e.target.checked })}
                         className="w-4 h-4 accent-primary"
                       />
-                      <label htmlFor="isFeaturedNews" className="text-sm text-gray-300 cursor-pointer">
+                      <label
+                        htmlFor="isFeaturedNews"
+                        className="text-sm text-gray-300 cursor-pointer"
+                      >
                         Destacar esta notícia na página inicial
                       </label>
                     </div>
@@ -851,7 +898,11 @@ export default function DashboardPage() {
                       disabled={submittingNews}
                       className="px-6 py-2 bg-primary text-dark font-bold rounded-lg hover:bg-primary-dark disabled:opacity-50 transition-colors"
                     >
-                      {submittingNews ? 'Salvando...' : editingNewsId ? 'Salvar Alterações' : 'Criar Notícia'}
+                      {submittingNews
+                        ? 'Salvando...'
+                        : editingNewsId
+                          ? 'Salvar Alterações'
+                          : 'Criar Notícia'}
                     </button>
                   </div>
                 </form>
@@ -870,18 +921,27 @@ export default function DashboardPage() {
                   <tbody>
                     {loadingNews ? (
                       <tr>
-                        <td colSpan={3} className="p-8 text-center text-gray-500">Carregando notícias...</td>
+                        <td colSpan={3} className="p-8 text-center text-gray-500">
+                          Carregando notícias...
+                        </td>
                       </tr>
                     ) : newsList.length === 0 ? (
                       <tr>
-                        <td colSpan={3} className="p-8 text-center text-gray-500">Nenhuma notícia cadastrada.</td>
+                        <td colSpan={3} className="p-8 text-center text-gray-500">
+                          Nenhuma notícia cadastrada.
+                        </td>
                       </tr>
                     ) : (
                       newsList.map((n) => (
-                        <tr key={n.id} className="border-b border-[#014263]/10 hover:bg-white/5 transition-colors">
+                        <tr
+                          key={n.id}
+                          className="border-b border-[#014263]/10 hover:bg-white/5 transition-colors"
+                        >
                           <td className="p-4">
                             <p className="font-semibold text-white text-lg">{n.title}</p>
-                            <p className="text-sm text-gray-400 truncate max-w-md">{n.description}</p>
+                            <p className="text-sm text-gray-400 truncate max-w-md">
+                              {n.description}
+                            </p>
                           </td>
                           <td className="p-4 text-center">
                             <button
@@ -928,7 +988,19 @@ export default function DashboardPage() {
                   type="button"
                   onClick={() => {
                     setEditingCaseId(null);
-                    setCaseForm({ title: '', description: '', summary: '', image: '', link: '', isFeatured: false, year: '', client: '', tags: '', technologies: '', gallery: '' });
+                    setCaseForm({
+                      title: '',
+                      description: '',
+                      summary: '',
+                      image: '',
+                      link: '',
+                      isFeatured: false,
+                      year: '',
+                      client: '',
+                      tags: '',
+                      technologies: '',
+                      gallery: '',
+                    });
                     setShowCaseForm(!showCaseForm);
                   }}
                   className="bg-primary hover:bg-primary-dark text-dark font-semibold px-6 py-2 rounded-lg transition-colors flex items-center gap-2"
@@ -957,7 +1029,9 @@ export default function DashboardPage() {
                   onSubmit={handleCreateCase}
                   className="bg-[#010D13]/80 p-6 rounded-2xl border border-[#014263]/30 shadow-lg space-y-4"
                 >
-                  <h3 className="text-lg font-bold text-white mb-2">{editingCaseId ? 'Editar Case' : 'Novo Case de Sucesso'}</h3>
+                  <h3 className="text-lg font-bold text-white mb-2">
+                    {editingCaseId ? 'Editar Case' : 'Novo Case de Sucesso'}
+                  </h3>
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="title" className="block text-sm text-gray-400 mb-1">
@@ -1018,8 +1092,18 @@ export default function DashboardPage() {
                       </span>
                       {caseForm.image ? (
                         <div className="relative w-full h-40 bg-[#010D13] rounded-lg border border-gray-700 flex items-center justify-center overflow-hidden">
-                          <img src={caseForm.image} alt="Preview" className="max-w-full max-h-full object-contain" />
-                          <button type="button" onClick={() => setCaseForm({ ...caseForm, image: '' })} className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shadow-lg text-sm transition-colors">✕</button>
+                          <img
+                            src={caseForm.image}
+                            alt="Preview"
+                            className="max-w-full max-h-full object-contain"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setCaseForm({ ...caseForm, image: '' })}
+                            className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shadow-lg text-sm transition-colors"
+                          >
+                            ✕
+                          </button>
                         </div>
                       ) : (
                         <div className="flex gap-2 items-center">
@@ -1040,7 +1124,8 @@ export default function DashboardPage() {
                               onChange={async (e) => {
                                 const files = Array.from(e.target.files || []);
                                 const results = await processFiles(files);
-                                if (results.length > 0) setCaseForm({ ...caseForm, image: results[0] });
+                                if (results.length > 0)
+                                  setCaseForm({ ...caseForm, image: results[0] });
                                 e.target.value = '';
                               }}
                             />
@@ -1055,22 +1140,42 @@ export default function DashboardPage() {
                       {caseForm.gallery && caseForm.gallery.trim().length > 0 && (
                         <div className="flex flex-wrap gap-4 mb-4 p-4 bg-[#010D13] rounded-lg border border-gray-700">
                           {parseGalleryStr(caseForm.gallery).map((item, idx) => {
-                            const isVideo = item.startsWith('data:video/') || item.match(/\.(mp4|webm|ogg)$/i);
+                            const isVideo =
+                              item.startsWith('data:video/') || item.match(/\.(mp4|webm|ogg)$/i);
                             return (
-                              // biome-ignore lint/suspicious/noArrayIndexKey: Array de strings simples
-                              <div key={`gallery-${idx}`} className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-600 bg-black group">
+                              <div
+                                key={item}
+                                className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-600 bg-black group"
+                              >
                                 {isVideo ? (
-                                  <video src={item} muted autoPlay loop playsInline className="w-full h-full object-cover">
+                                  <video
+                                    src={item}
+                                    muted
+                                    autoPlay
+                                    loop
+                                    playsInline
+                                    className="w-full h-full object-cover"
+                                  >
                                     <track kind="captions" />
                                   </video>
                                 ) : (
-                                  <img src={item} alt={`Mídia ${idx + 1}`} className="w-full h-full object-cover" />
+                                  <img
+                                    src={item}
+                                    alt={`Mídia ${idx + 1}`}
+                                    className="w-full h-full object-cover"
+                                  />
                                 )}
-                                <button type="button" onClick={() => {
-                                  const arr = parseGalleryStr(caseForm.gallery);
-                                  arr.splice(idx, 1);
-                                  setCaseForm({...caseForm, gallery: arr.join(', ')});
-                                }} className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white w-6 h-6 rounded-full flex justify-center items-center text-xs shadow-md opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const arr = parseGalleryStr(caseForm.gallery);
+                                    arr.splice(idx, 1);
+                                    setCaseForm({ ...caseForm, gallery: arr.join(', ') });
+                                  }}
+                                  className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white w-6 h-6 rounded-full flex justify-center items-center text-xs shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                                >
+                                  ✕
+                                </button>
                               </div>
                             );
                           })}
@@ -1083,16 +1188,22 @@ export default function DashboardPage() {
                           className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
                           placeholder="Cole uma URL e clique em Adicionar..."
                         />
-                        <button type="button" onClick={() => {
-                          const input = document.getElementById('gallery-input') as HTMLInputElement;
-                          const val = input?.value.trim();
-                          if (val) {
-                            const existing = parseGalleryStr(caseForm.gallery);
-                            existing.push(val);
-                            setCaseForm({...caseForm, gallery: existing.join(', ')});
-                            input.value = '';
-                          }
-                        }} className="bg-[#67A7D5]/20 text-[#67A7D5] px-4 py-2 rounded-lg hover:bg-[#67A7D5]/30 transition-colors whitespace-nowrap text-sm font-bold">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const input = document.getElementById(
+                              'gallery-input'
+                            ) as HTMLInputElement;
+                            const val = input?.value.trim();
+                            if (val) {
+                              const existing = parseGalleryStr(caseForm.gallery);
+                              existing.push(val);
+                              setCaseForm({ ...caseForm, gallery: existing.join(', ') });
+                              input.value = '';
+                            }
+                          }}
+                          className="bg-[#67A7D5]/20 text-[#67A7D5] px-4 py-2 rounded-lg hover:bg-[#67A7D5]/30 transition-colors whitespace-nowrap text-sm font-bold"
+                        >
                           Adicionar
                         </button>
                         <label className="bg-[#67A7D5]/20 text-[#67A7D5] px-4 py-2 rounded-lg cursor-pointer hover:bg-[#67A7D5]/30 transition-colors whitespace-nowrap text-sm font-bold">
@@ -1102,16 +1213,18 @@ export default function DashboardPage() {
                             accept="image/*,video/*"
                             multiple
                             className="hidden"
-                              onChange={async (e) => {
-                                const files = Array.from(e.target.files || []);
-                                const results = await processFiles(files);
-                                if (results.length > 0) {
-                                  const existing = parseGalleryStr(caseForm.gallery);
-                                  const newGallery = [...existing, ...results].filter(Boolean).join(', ');
-                                  setCaseForm({ ...caseForm, gallery: newGallery });
-                                }
-                                e.target.value = '';
-                              }}
+                            onChange={async (e) => {
+                              const files = Array.from(e.target.files || []);
+                              const results = await processFiles(files);
+                              if (results.length > 0) {
+                                const existing = parseGalleryStr(caseForm.gallery);
+                                const newGallery = [...existing, ...results]
+                                  .filter(Boolean)
+                                  .join(', ');
+                                setCaseForm({ ...caseForm, gallery: newGallery });
+                              }
+                              e.target.value = '';
+                            }}
                           />
                         </label>
                       </div>
@@ -1196,7 +1309,11 @@ export default function DashboardPage() {
                       disabled={submittingCase}
                       className="px-6 py-2 bg-primary text-dark font-bold rounded-lg hover:bg-primary-dark disabled:opacity-50 transition-colors"
                     >
-                      {submittingCase ? 'Salvando...' : editingCaseId ? 'Salvar Alterações' : 'Criar Case'}
+                      {submittingCase
+                        ? 'Salvando...'
+                        : editingCaseId
+                          ? 'Salvar Alterações'
+                          : 'Criar Case'}
                     </button>
                   </div>
                 </form>
@@ -1308,23 +1425,60 @@ export default function DashboardPage() {
 
               {/* Formulário de Criação */}
               {showPartnerForm && (
-                <form onSubmit={handleCreatePartner} className="bg-[#010D13]/80 p-6 rounded-2xl border border-[#014263]/30 shadow-lg space-y-4">
-                  <h3 className="text-lg font-bold text-white mb-2">{editingPartnerId ? 'Editar Parceiro' : 'Novo Parceiro'}</h3>
+                <form
+                  onSubmit={handleCreatePartner}
+                  className="bg-[#010D13]/80 p-6 rounded-2xl border border-[#014263]/30 shadow-lg space-y-4"
+                >
+                  <h3 className="text-lg font-bold text-white mb-2">
+                    {editingPartnerId ? 'Editar Parceiro' : 'Novo Parceiro'}
+                  </h3>
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="partnerName" className="block text-sm text-gray-400 mb-1">Nome do Parceiro</label>
-                      <input id="partnerName" required type="text" value={partnerForm.name} onChange={(e) => setPartnerForm({ ...partnerForm, name: e.target.value })} className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none" placeholder="Ex: Microsoft" />
+                      <label htmlFor="partnerName" className="block text-sm text-gray-400 mb-1">
+                        Nome do Parceiro
+                      </label>
+                      <input
+                        id="partnerName"
+                        required
+                        type="text"
+                        value={partnerForm.name}
+                        onChange={(e) => setPartnerForm({ ...partnerForm, name: e.target.value })}
+                        className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
+                        placeholder="Ex: Microsoft"
+                      />
                     </div>
                     <div>
-                      <span className="block text-sm text-gray-400 mb-1">URL ou Upload (Logo sem fundo)</span>
+                      <span className="block text-sm text-gray-400 mb-1">
+                        URL ou Upload (Logo sem fundo)
+                      </span>
                       {partnerForm.image ? (
                         <div className="relative w-full h-32 bg-[#010D13] rounded-lg border border-gray-700 flex items-center justify-center overflow-hidden p-4">
-                          <img src={partnerForm.image} alt="Preview" className="max-w-full max-h-full object-contain" />
-                          <button type="button" onClick={() => setPartnerForm({ ...partnerForm, image: '' })} className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shadow-lg text-sm transition-colors">✕</button>
+                          <img
+                            src={partnerForm.image}
+                            alt="Preview"
+                            className="max-w-full max-h-full object-contain"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setPartnerForm({ ...partnerForm, image: '' })}
+                            className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shadow-lg text-sm transition-colors"
+                          >
+                            ✕
+                          </button>
                         </div>
                       ) : (
                         <div className="flex gap-2 items-center">
-                          <input id="partnerImage" required={!partnerForm.image} type="text" value={partnerForm.image} onChange={(e) => setPartnerForm({ ...partnerForm, image: e.target.value })} className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none" placeholder="https://..." />
+                          <input
+                            id="partnerImage"
+                            required={!partnerForm.image}
+                            type="text"
+                            value={partnerForm.image}
+                            onChange={(e) =>
+                              setPartnerForm({ ...partnerForm, image: e.target.value })
+                            }
+                            className="w-full bg-dark border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-[#67A7D5] outline-none"
+                            placeholder="https://..."
+                          />
                           <label className="bg-[#67A7D5]/20 text-[#67A7D5] px-4 py-2 rounded-lg cursor-pointer hover:bg-[#67A7D5]/30 transition-colors whitespace-nowrap text-sm font-bold">
                             Upload
                             <input
@@ -1334,7 +1488,8 @@ export default function DashboardPage() {
                               onChange={async (e) => {
                                 const files = Array.from(e.target.files || []);
                                 const results = await processFiles(files);
-                                if (results.length > 0) setPartnerForm({ ...partnerForm, image: results[0] });
+                                if (results.length > 0)
+                                  setPartnerForm({ ...partnerForm, image: results[0] });
                                 e.target.value = '';
                               }}
                             />
@@ -1343,14 +1498,44 @@ export default function DashboardPage() {
                       )}
                     </div>
                     <div className="md:col-span-2 flex items-center gap-2 mt-2">
-                      <input type="checkbox" id="isFeaturedPartner" checked={partnerForm.isFeatured} onChange={(e) => setPartnerForm({ ...partnerForm, isFeatured: e.target.checked })} className="w-4 h-4 accent-primary" />
-                      <label htmlFor="isFeaturedPartner" className="text-sm text-gray-300 cursor-pointer">Destacar este parceiro na página inicial</label>
+                      <input
+                        type="checkbox"
+                        id="isFeaturedPartner"
+                        checked={partnerForm.isFeatured}
+                        onChange={(e) =>
+                          setPartnerForm({ ...partnerForm, isFeatured: e.target.checked })
+                        }
+                        className="w-4 h-4 accent-primary"
+                      />
+                      <label
+                        htmlFor="isFeaturedPartner"
+                        className="text-sm text-gray-300 cursor-pointer"
+                      >
+                        Destacar este parceiro na página inicial
+                      </label>
                     </div>
                   </div>
                   <div className="flex justify-end gap-3 mt-4">
-                    <button type="button" onClick={() => { setShowPartnerForm(false); setEditingPartnerId(null); }} className="px-4 py-2 text-gray-400 hover:text-white transition-colors">Cancelar</button>
-                    <button type="submit" disabled={submittingPartner} className="px-6 py-2 bg-primary text-dark font-bold rounded-lg hover:bg-primary-dark disabled:opacity-50 transition-colors">
-                      {submittingPartner ? 'Salvando...' : editingPartnerId ? 'Salvar Alterações' : 'Criar Parceiro'}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowPartnerForm(false);
+                        setEditingPartnerId(null);
+                      }}
+                      className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={submittingPartner}
+                      className="px-6 py-2 bg-primary text-dark font-bold rounded-lg hover:bg-primary-dark disabled:opacity-50 transition-colors"
+                    >
+                      {submittingPartner
+                        ? 'Salvando...'
+                        : editingPartnerId
+                          ? 'Salvar Alterações'
+                          : 'Criar Parceiro'}
                     </button>
                   </div>
                 </form>
@@ -1368,28 +1553,58 @@ export default function DashboardPage() {
                   </thead>
                   <tbody>
                     {loadingPartners ? (
-                      <tr><td colSpan={3} className="p-8 text-center text-gray-500">Carregando parceiros...</td></tr>
+                      <tr>
+                        <td colSpan={3} className="p-8 text-center text-gray-500">
+                          Carregando parceiros...
+                        </td>
+                      </tr>
                     ) : partners.length === 0 ? (
-                      <tr><td colSpan={3} className="p-8 text-center text-gray-500">Nenhum parceiro cadastrado.</td></tr>
+                      <tr>
+                        <td colSpan={3} className="p-8 text-center text-gray-500">
+                          Nenhum parceiro cadastrado.
+                        </td>
+                      </tr>
                     ) : (
                       partners.map((p) => (
-                        <tr key={p.id} className="border-b border-[#014263]/10 hover:bg-white/5 transition-colors">
+                        <tr
+                          key={p.id}
+                          className="border-b border-[#014263]/10 hover:bg-white/5 transition-colors"
+                        >
                           <td className="p-4 flex items-center gap-4">
                             <div className="w-16 h-10 bg-white/10 rounded flex items-center justify-center overflow-hidden">
-                              <Image src={p.image} alt={p.name} width={64} height={40} className="object-contain" unoptimized />
+                              <Image
+                                src={p.image}
+                                alt={p.name}
+                                width={64}
+                                height={40}
+                                className="object-contain"
+                                unoptimized
+                              />
                             </div>
                             <p className="font-semibold text-white text-lg">{p.name}</p>
                           </td>
                           <td className="p-4 text-center">
-                            <button type="button" onClick={() => handleToggleFeaturedPartner(p)} className={`px-3 py-1 rounded-full text-xs font-bold border transition-colors ${p.isFeatured ? 'bg-primary/20 text-primary border-primary/50' : 'bg-gray-800 text-gray-400 border-gray-600'}`}>
+                            <button
+                              type="button"
+                              onClick={() => handleToggleFeaturedPartner(p)}
+                              className={`px-3 py-1 rounded-full text-xs font-bold border transition-colors ${p.isFeatured ? 'bg-primary/20 text-primary border-primary/50' : 'bg-gray-800 text-gray-400 border-gray-600'}`}
+                            >
                               {p.isFeatured ? '★ Destacado' : 'Sem Destaque'}
                             </button>
                           </td>
                           <td className="p-4 text-right space-x-2 whitespace-nowrap">
-                            <button type="button" onClick={() => handleEditPartnerClick(p)} className="text-[#67A7D5] hover:text-white px-3 py-1 bg-[#67A7D5]/10 rounded-lg transition-colors text-sm">
+                            <button
+                              type="button"
+                              onClick={() => handleEditPartnerClick(p)}
+                              className="text-[#67A7D5] hover:text-white px-3 py-1 bg-[#67A7D5]/10 rounded-lg transition-colors text-sm"
+                            >
                               Editar
                             </button>
-                            <button type="button" onClick={() => handleDeletePartner(p.id)} className="text-red-400 hover:text-red-300 px-3 py-1 bg-red-400/10 rounded-lg transition-colors text-sm">
+                            <button
+                              type="button"
+                              onClick={() => handleDeletePartner(p.id)}
+                              className="text-red-400 hover:text-red-300 px-3 py-1 bg-red-400/10 rounded-lg transition-colors text-sm"
+                            >
                               Excluir
                             </button>
                           </td>
@@ -1424,16 +1639,33 @@ export default function DashboardPage() {
                   </thead>
                   <tbody>
                     {loadingMessages ? (
-                      <tr><td colSpan={4} className="p-8 text-center text-gray-500">Carregando mensagens...</td></tr>
+                      <tr>
+                        <td colSpan={4} className="p-8 text-center text-gray-500">
+                          Carregando mensagens...
+                        </td>
+                      </tr>
                     ) : messages.length === 0 ? (
-                      <tr><td colSpan={4} className="p-8 text-center text-gray-500">Nenhuma mensagem recebida ainda.</td></tr>
+                      <tr>
+                        <td colSpan={4} className="p-8 text-center text-gray-500">
+                          Nenhuma mensagem recebida ainda.
+                        </td>
+                      </tr>
                     ) : (
                       messages.map((m) => (
-                        <tr key={m.id} className={`border-b border-[#014263]/10 transition-colors ${m.isRead ? 'bg-transparent' : 'bg-[#67A7D5]/5'}`}>
+                        <tr
+                          key={m.id}
+                          className={`border-b border-[#014263]/10 transition-colors ${m.isRead ? 'bg-transparent' : 'bg-[#67A7D5]/5'}`}
+                        >
                           <td className="p-4 align-top">
-                            <p className="font-semibold text-white truncate max-w-[200px] xl:max-w-xs">{m.email}</p>
+                            <p className="font-semibold text-white truncate max-w-[200px] xl:max-w-xs">
+                              {m.email}
+                            </p>
                             <p className="text-xs text-gray-400 mt-1">
-                              {new Date(m.createdAt).toLocaleDateString('pt-BR')} às {new Date(m.createdAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                              {new Date(m.createdAt).toLocaleDateString('pt-BR')} às{' '}
+                              {new Date(m.createdAt).toLocaleTimeString('pt-BR', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
                             </p>
                           </td>
                           <td className="p-4 align-top">
@@ -1441,9 +1673,13 @@ export default function DashboardPage() {
                           </td>
                           <td className="p-4 align-top text-center">
                             {m.isRead ? (
-                              <span className="text-xs font-bold text-gray-500 border border-gray-700 px-2 py-1 rounded-full">Lida</span>
+                              <span className="text-xs font-bold text-gray-500 border border-gray-700 px-2 py-1 rounded-full">
+                                Lida
+                              </span>
                             ) : (
-                              <span className="text-xs font-bold text-[#67A7D5] border border-[#67A7D5]/50 bg-[#67A7D5]/10 px-2 py-1 rounded-full">Nova</span>
+                              <span className="text-xs font-bold text-[#67A7D5] border border-[#67A7D5]/50 bg-[#67A7D5]/10 px-2 py-1 rounded-full">
+                                Nova
+                              </span>
                             )}
                           </td>
                           <td className="p-4 align-top text-right space-y-2">

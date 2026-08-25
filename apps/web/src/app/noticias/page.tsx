@@ -1,10 +1,10 @@
 'use client';
 
-import { motion, type Variants } from 'framer-motion';
+import { api } from '@/lib/api';
+import { type Variants, motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
 
 interface News {
   id: string;
