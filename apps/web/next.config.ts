@@ -49,4 +49,5 @@ const nextConfig: NextConfig = {
   },
 };
 
+// Deploy trigger for Vercel
 export default nextConfig;
