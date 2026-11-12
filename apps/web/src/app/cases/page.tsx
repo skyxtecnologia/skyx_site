@@ -1,5 +1,6 @@
 'use client';
 
+import { useLanguage } from '@/contexts/LanguageContext';
 import { api } from '@/lib/api';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
@@ -38,6 +39,7 @@ const translations = {
     tech: 'Tecnologias:',
     explore: 'Explorar Projeto',
     gallery: 'Galeria',
+    readMore: 'Ler mais',
   },
   EN: {
     backToSite: 'Back to site',
@@ -48,11 +50,23 @@ const translations = {
     tech: 'Technologies:',
     explore: 'Explore Project',
     gallery: 'Gallery',
+    readMore: 'Read more',
+  },
+  ES: {
+    backToSite: 'Volver al sitio',
+    loadingMsg: 'Cargando casos...',
+    emptyMsg: 'Ningún caso publicado por el momento.',
+    client: 'Cliente:',
+    year: 'Año:',
+    tech: 'Tecnologías:',
+    explore: 'Explorar Proyecto',
+    gallery: 'Galería',
+    readMore: 'Leer más',
   },
 } as const;
 
 export default function CasesPage() {
-  const [lang, setLang] = useState<'PT' | 'EN'>('PT');
+  const { lang, setLang } = useLanguage();
   const t = translations[lang];
   const [casesList, setCasesList] = useState<CaseExtended[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -147,9 +161,21 @@ export default function CasesPage() {
     fetchCases();
   }, []);
 
+  useEffect(() => {
+    if (isLoading || casesList.length === 0) return;
+    const params = new URLSearchParams(window.location.search);
+    const targetCaseId = params.get('case');
+    if (targetCaseId) {
+      const element = document.getElementById(`case-${targetCaseId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, [isLoading, casesList]);
+
   if (isLoading) {
     return (
-      <div className="bg-dark min-h-screen flex items-center justify-center">
+      <div className="bg-[#010D13] min-h-screen flex items-center justify-center">
         <p className="text-[#67A7D5] text-xl font-roboto animate-pulse">{t.loadingMsg}</p>
       </div>
     );
@@ -157,7 +183,7 @@ export default function CasesPage() {
 
   if (casesList.length === 0) {
     return (
-      <div className="bg-dark min-h-screen flex flex-col items-center justify-center gap-6">
+      <div className="bg-[#010D13] min-h-screen flex flex-col items-center justify-center gap-6">
         <p className="text-gray-400 text-xl font-roboto">{t.emptyMsg}</p>
         <Link href="/" className="text-[#67A7D5] hover:text-white transition-colors">
           &larr; {t.backToSite}
@@ -167,7 +193,7 @@ export default function CasesPage() {
   }
 
   return (
-    <div className="bg-dark h-screen w-full overflow-hidden relative font-roboto">
+    <div className="bg-[#010D13] h-screen w-full overflow-hidden relative font-roboto">
       {/* Header Fixo Transparente */}
       <header className="fixed top-0 w-full px-6 lg:px-12 py-6 z-50 flex items-center justify-between pointer-events-none">
         <Link href="/" className="pointer-events-auto">
@@ -183,10 +209,10 @@ export default function CasesPage() {
         <div className="flex items-center gap-4 md:gap-6 pointer-events-auto">
           <button
             type="button"
-            onClick={() => setLang(lang === 'PT' ? 'EN' : 'PT')}
-            className="text-gray-300 hover:text-white font-roboto text-sm font-bold transition-colors uppercase drop-shadow-md"
+            onClick={() => setLang(lang === 'PT' ? 'EN' : lang === 'EN' ? 'ES' : 'PT')}
+            className="text-gray-300 hover:text-white font-roboto text-sm font-bold transition-colors uppercase drop-shadow-md cursor-pointer"
           >
-            {lang === 'PT' ? 'EN' : 'PT'}
+            {lang}
           </button>
           <Link
             href="/"
@@ -202,10 +228,11 @@ export default function CasesPage() {
         {casesList.map((c) => (
           <section
             key={c.id}
+            id={`case-${c.id}`}
             className="h-screen w-full snap-start relative flex flex-col justify-center"
           >
             {/* Background com Efeito Degradê Escuro Lateral */}
-            <div className="absolute inset-0 z-0 bg-dark">
+            <div className="absolute inset-0 z-0 bg-[#010D13]">
               <Image
                 src={
                   c.image ||
@@ -213,6 +240,7 @@ export default function CasesPage() {
                 }
                 alt={c.title}
                 fill
+                sizes="100vw"
                 className="object-cover opacity-90"
                 unoptimized
               />
@@ -232,20 +260,27 @@ export default function CasesPage() {
                 transition={{ duration: 0.8 }}
                 className="max-w-2xl"
               >
-                {/* Tags Acima do Título */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {c.tags.map((tag: string) => (
+                {/* Tags Minimalistas em Branco Acima do Título */}
+                <div className="flex flex-wrap items-center gap-3 mb-4">
+                  {c.tags.map((tag: string, idx: number) => (
                     <span
                       key={tag}
-                      className="px-3 py-1 bg-[#67A7D5]/20 border border-[#67A7D5]/30 text-[#67A7D5] text-xs font-bold uppercase tracking-widest rounded-full shadow-sm"
+                      className="inline-flex items-center gap-3 text-white/90 text-xs font-roboto font-medium uppercase tracking-[0.2em] drop-shadow-md"
                     >
-                      {tag}
+                      {idx > 0 && <span className="text-white/40">•</span>}
+                      <span>{tag}</span>
                     </span>
                   ))}
                 </div>
 
-                {/* Título Giga */}
-                <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 font-zen-dots leading-tight drop-shadow-lg">
+                {/* Título Harmônico na Proporção Áurea */}
+                <h2
+                  className="text-white mb-5 font-zen-dots drop-shadow-lg text-balance"
+                  style={{
+                    fontSize: 'clamp(1.618rem, 3.6vw, 2.75rem)',
+                    lineHeight: 1.22,
+                  }}
+                >
                   {c.title}
                 </h2>
 
@@ -281,7 +316,7 @@ export default function CasesPage() {
                   onClick={() => setActiveDescription({ title: c.title, text: c.description })}
                   className="text-[#67A7D5] hover:text-white text-sm font-bold font-roboto uppercase tracking-wider mb-8 flex items-center gap-2 transition-colors cursor-pointer"
                 >
-                  Ler mais
+                  {t.readMore}
                 </button>
 
                 {/* Ação */}
@@ -337,8 +372,9 @@ export default function CasesPage() {
                       ) : (
                         <Image
                           src={item}
-                          alt={`Galeria ${idx}`}
+                          alt={`Mídia ${idx + 1} de ${c.title}`}
                           fill
+                          sizes="160px"
                           className="object-cover group-hover:scale-110 transition-transform duration-500"
                           unoptimized
                         />

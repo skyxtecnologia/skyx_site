@@ -1,1 +1,1 @@
-export { AnimatedContainer, GlowButton } from './primitives';
+export { AnimatedContainer, GlowButton, SpotlightCard } from './primitives';

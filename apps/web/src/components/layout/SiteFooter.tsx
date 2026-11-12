@@ -20,6 +20,7 @@ const translations = {
     capsule: 'Cápsula Inmersiva',
     solutions: 'Soluciones',
     cases: 'Casos',
+    news: 'Noticias',
     impact: 'Impacto',
     contact: 'Contacto',
     contactTitle: 'Contacto',
@@ -29,7 +30,7 @@ const translations = {
   PT: {
     nav: ['Sobre nós', 'Serviços', 'Cases', 'Blog', 'Contato', 'Streaming'],
     pillars: [
-      '● DESENVOVIMENTO E INOVAÇÃO',
+      '● DESENVOLVIMENTO E INOVAÇÃO',
       '● EDUCAÇÃO E ACESSIBILIDADE',
       '● CRIATIVIDADE E SEGURANÇA',
     ],
@@ -40,6 +41,7 @@ const translations = {
     capsule: 'Cápsula Imersiva',
     solutions: 'Soluções',
     cases: 'Cases',
+    news: 'Notícias',
     impact: 'Impacto',
     contact: 'Contato',
     contactTitle: 'Contato',
@@ -60,6 +62,7 @@ const translations = {
     capsule: 'Immersive Capsule',
     solutions: 'Solutions',
     cases: 'Cases',
+    news: 'News',
     impact: 'Impact',
     contact: 'Contact',
     contactTitle: 'Contact',
@@ -79,10 +82,11 @@ export function SiteFooter() {
   ];
 
   const navLinks = [
-    { name: t.company, href: '/#sobre' },
-    { name: t.capsule, href: '/#capsula' },
+    { name: t.company, href: '/empresa' },
+    { name: t.capsule, href: '/capsula' },
     { name: t.solutions, href: '/#solucoes' },
     { name: t.cases, href: '/cases' },
+    { name: t.news, href: '/noticias' },
     { name: t.impact, href: '/#impacto' },
     { name: t.contact, href: '/#contato' },
   ];
@@ -156,6 +160,16 @@ export function SiteFooter() {
             <h4 className="text-white font-semibold text-lg mb-2">{t.contactTitle}</h4>
             <p className="text-gray-400 text-sm">contato@skyxtecnologia.com.br</p>
             <p className="text-gray-400 text-sm">Brasil</p>
+            <div className="flex flex-col gap-1.5 mt-2">
+              {t.pillars.map((pillar) => (
+                <span
+                  key={pillar}
+                  className="text-[11px] font-roboto-condensed tracking-wider text-[#67a7d5]/80"
+                >
+                  {pillar}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -163,18 +177,18 @@ export function SiteFooter() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 w-full pt-8 border-t border-white/5">
           <p className="text-gray-500 text-sm text-center md:text-left">{t.copyright}</p>
           <div className="flex gap-6">
-            <a
-              href="/"
+            <Link
+              href="/#contato"
               className="text-gray-500 hover:text-gray-300 transition-colors text-sm underline"
             >
               {t.terms}
-            </a>
-            <a
-              href="/"
+            </Link>
+            <Link
+              href="/#contato"
               className="text-gray-500 hover:text-gray-300 transition-colors text-sm underline"
             >
               {t.privacy}
-            </a>
+            </Link>
           </div>
         </div>
       </motion.div>

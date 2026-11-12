@@ -17,6 +17,21 @@ router.get('/', async (req, res, next) => {
     }
 });
 
+// OBTER notícia específica por ID (ROTA PÚBLICA)
+router.get('/:id', async (req, res, next) => {
+    try {
+        const newsItem = await prisma.news.findUnique({
+            where: { id: req.params.id },
+        });
+        if (!newsItem) {
+            return res.status(404).json({ error: 'Notícia não encontrada.' });
+        }
+        res.json(newsItem);
+    } catch (error) {
+        next(error);
+    }
+});
+
 // Middleware de Autenticação: Protege as rotas abaixo
 router.use(async (req, res, next) => {
     try {

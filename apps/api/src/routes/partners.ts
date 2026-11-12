@@ -9,7 +9,7 @@ const router = Router();
 // Schemas de Validação (Zod)
 const partnerSchema = z.object({
     name: z.string().min(1, 'O nome é obrigatório.'),
-    image: z.string().url('A imagem deve ser uma URL válida.'),
+    image: z.string().min(1, 'A imagem é obrigatória.'),
     isFeatured: z.boolean().optional().default(false),
 });
 

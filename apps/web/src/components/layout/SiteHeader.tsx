@@ -4,9 +4,10 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 
-import Flag from 'react-world-flags';
+import { CountryFlag } from '@/components/ui/CountryFlag';
 
 type DropdownItem = {
   title: string;
@@ -19,36 +20,37 @@ type NavItem = {
   dropdown?: DropdownItem[];
 };
 
-const navTranslations = {
+const navTranslations: Record<'PT' | 'EN' | 'ES', NavItem[]> = {
   PT: [
     {
       name: 'Empresa',
       href: '/#sobre',
       dropdown: [
-        { title: 'A Empresa', href: '/empresa' },
-        { title: 'Nossa História', href: '/empresa' },
-        { title: 'Missão e Valores', href: '/empresa' },
+        { title: 'Nossa História', href: '/empresa#historia' },
+        { title: 'Missão e Valores', href: '/empresa#missao' },
+        { title: 'Liderança', href: '/empresa#lideranca' },
       ],
     },
     {
       name: 'Cápsula Imersiva',
       href: '/#capsula',
       dropdown: [
-        { title: 'Sobre a Cápsula', href: '/capsula' },
-        { title: 'Aplicações', href: '/capsula' },
-        { title: 'Contato & Contratação', href: '/capsula' },
+        { title: 'Sobre a Cápsula', href: '/capsula#sobre' },
+        { title: 'Aplicações', href: '/capsula#aplicacoes' },
+        { title: 'Contato & Contratação', href: '/capsula#orcamento' },
       ],
     },
     {
       name: 'Soluções',
       href: '/#solucoes',
       dropdown: [
-        { title: 'Engenharia de Software', href: '/solucoes' },
-        { title: 'Segurança & Inovação', href: '/solucoes' },
+        { title: 'Engenharia de Software', href: '/#solucoes' },
+        { title: 'Segurança & Inovação', href: '/#solucoes' },
       ],
     },
     { name: 'Cases', href: '/cases' },
-    { name: 'Impacto', href: '/#sobre' },
+    { name: 'Notícias', href: '/noticias' },
+    { name: 'Impacto', href: '/#impacto' },
     { name: 'Contato', href: '/#contato' },
   ],
   EN: [
@@ -56,30 +58,31 @@ const navTranslations = {
       name: 'Company',
       href: '/#sobre',
       dropdown: [
-        { title: 'The Company', href: '/empresa' },
-        { title: 'Our History', href: '/empresa' },
-        { title: 'Mission and Values', href: '/empresa' },
+        { title: 'Our History', href: '/empresa#historia' },
+        { title: 'Mission and Values', href: '/empresa#missao' },
+        { title: 'Leadership', href: '/empresa#lideranca' },
       ],
     },
     {
       name: 'Immersive Capsule',
       href: '/#capsula',
       dropdown: [
-        { title: 'About the Capsule', href: '/capsula' },
-        { title: 'Applications', href: '/capsula' },
-        { title: 'Contact & Booking', href: '/capsula' },
+        { title: 'About the Capsule', href: '/capsula#sobre' },
+        { title: 'Applications', href: '/capsula#aplicacoes' },
+        { title: 'Contact & Booking', href: '/capsula#orcamento' },
       ],
     },
     {
       name: 'Solutions',
       href: '/#solucoes',
       dropdown: [
-        { title: 'Software Engineering', href: '/solucoes' },
-        { title: 'Security & Innovation', href: '/solucoes' },
+        { title: 'Software Engineering', href: '/#solucoes' },
+        { title: 'Security & Innovation', href: '/#solucoes' },
       ],
     },
     { name: 'Cases', href: '/cases' },
-    { name: 'Impact', href: '/#sobre' },
+    { name: 'News', href: '/noticias' },
+    { name: 'Impact', href: '/#impacto' },
     { name: 'Contact', href: '/#contato' },
   ],
   ES: [
@@ -87,30 +90,31 @@ const navTranslations = {
       name: 'Empresa',
       href: '/#sobre',
       dropdown: [
-        { title: 'La Empresa', href: '/empresa' },
-        { title: 'Nuestra Historia', href: '/empresa' },
-        { title: 'Misión y Valores', href: '/empresa' },
+        { title: 'Nuestra Historia', href: '/empresa#historia' },
+        { title: 'Misión y Valores', href: '/empresa#missao' },
+        { title: 'Liderazgo', href: '/empresa#lideranca' },
       ],
     },
     {
       name: 'Cápsula Inmersiva',
       href: '/#capsula',
       dropdown: [
-        { title: 'Sobre la Cápsula', href: '/capsula' },
-        { title: 'Aplicaciones', href: '/capsula' },
-        { title: 'Contacto y Contratación', href: '/capsula' },
+        { title: 'Sobre la Cápsula', href: '/capsula#sobre' },
+        { title: 'Aplicaciones', href: '/capsula#aplicacoes' },
+        { title: 'Contacto y Contratación', href: '/capsula#orcamento' },
       ],
     },
     {
       name: 'Soluciones',
       href: '/#solucoes',
       dropdown: [
-        { title: 'Ingeniería de Software', href: '/solucoes' },
-        { title: 'Seguridad e Innovación', href: '/solucoes' },
+        { title: 'Ingeniería de Software', href: '/#solucoes' },
+        { title: 'Seguridad e Innovación', href: '/#solucoes' },
       ],
     },
     { name: 'Casos', href: '/cases' },
-    { name: 'Impacto', href: '/#sobre' },
+    { name: 'Noticias', href: '/noticias' },
+    { name: 'Impacto', href: '/#impacto' },
     { name: 'Contacto', href: '/#contato' },
   ],
 };
@@ -136,10 +140,21 @@ export function SiteHeader() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const { lang: currentLang, setLang: setCurrentLang } = useLanguage();
+  const pathname = usePathname();
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled((prev) => {
+            const next = window.scrollY > 50;
+            return prev === next ? prev : next;
+          });
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -148,13 +163,16 @@ export function SiteHeader() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  let dropdownTimeout: NodeJS.Timeout;
+  const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const handleMouseEnter = (name: string) => {
-    clearTimeout(dropdownTimeout);
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+      dropdownTimeoutRef.current = null;
+    }
     setActiveDropdown(name);
   };
   const handleMouseLeave = () => {
-    dropdownTimeout = setTimeout(() => {
+    dropdownTimeoutRef.current = setTimeout(() => {
       setActiveDropdown(null);
     }, 200);
   };
@@ -163,8 +181,8 @@ export function SiteHeader() {
     <motion.header
       className={`fixed left-1/2 -translate-x-1/2 w-[95%] max-w-6xl z-50 flex items-center justify-between px-6 transition-all duration-500 rounded-full border ${
         isScrolled
-          ? 'top-4 py-3 bg-[#010D13]/90 backdrop-blur-xl border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)]'
-          : 'top-8 py-4 bg-white/5 backdrop-blur-md border-white/20'
+          ? 'top-4 py-3 bg-[#010D13]/95 backdrop-blur-xl border-white/15 shadow-[0_8px_35px_rgba(0,0,0,0.6)]'
+          : 'top-8 py-4 bg-[#010D13]/65 backdrop-blur-xl border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.35)]'
       }`}
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -184,69 +202,88 @@ export function SiteHeader() {
       </div>
 
       {/* Desktop Menu */}
-      <nav className="hidden lg:flex flex-grow justify-center gap-8 items-center font-roboto">
-        {navTranslations[currentLang].map((item) => (
-          <div
-            key={item.name}
-            className="relative"
-            onMouseEnter={() => handleMouseEnter(item.name)}
-            onMouseLeave={handleMouseLeave}
-          >
-            <Link
-              href={item.href}
-              className="text-white hover:text-[#67a7d5] transition-colors text-sm font-normal relative group whitespace-nowrap tracking-wide py-4 flex items-center gap-1"
-            >
-              {item.name}
-              {item.dropdown && (
-                <svg
-                  className={`w-3.5 h-3.5 transition-transform duration-300 ${activeDropdown === item.name ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                  <title>Seta</title>
-                </svg>
-              )}
-              <span className="absolute bottom-3 left-0 w-0 h-0.5 bg-[#67a7d5] transition-all duration-300 group-hover:w-full" />
-            </Link>
+      <nav className="hidden lg:flex flex-grow justify-center gap-5 xl:gap-7 items-center font-roboto">
+        {navTranslations[currentLang].map((item) => {
+          const isRouteActive =
+            (item.href.startsWith('/empresa') && pathname === '/empresa') ||
+            (item.href.startsWith('/capsula') && pathname === '/capsula') ||
+            (item.href === '/cases' && pathname.startsWith('/cases')) ||
+            (item.href === '/noticias' && pathname.startsWith('/noticias'));
 
-            {/* Dropdown Menu */}
-            {item.dropdown && (
-              <AnimatePresence>
-                {activeDropdown === item.name && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    transition={{ duration: 0.2, ease: 'easeOut' }}
-                    className="absolute top-[calc(100%+10px)] left-1/2 -translate-x-1/2 w-[240px] bg-[#010D13]/95 backdrop-blur-xl border border-[#013149] rounded-2xl shadow-[0_20px_50px_rgba(1,66,99,0.3)] overflow-hidden py-3"
+          return (
+            <div
+              key={item.name}
+              className="relative"
+              onMouseEnter={() => handleMouseEnter(item.name)}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Link
+                href={item.href}
+                className={`transition-colors text-sm font-normal relative group whitespace-nowrap tracking-wide py-4 flex items-center gap-1 ${
+                  isRouteActive ? 'text-white font-medium' : 'text-white/85 hover:text-[#67a7d5]'
+                }`}
+              >
+                {item.name}
+                {item.dropdown && (
+                  <svg
+                    className={`w-3.5 h-3.5 transition-transform duration-300 ${activeDropdown === item.name ? 'rotate-180 text-[#00D9FF]' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-[#010D13] border-l border-t border-[#013149] rotate-45" />
-                    <div className="relative z-10 flex flex-col gap-1 px-2">
-                      {item.dropdown.map((subItem) => (
-                        <Link
-                          key={subItem.title}
-                          href={subItem.href}
-                          className="px-4 py-2 hover:bg-[#013149]/50 rounded-xl transition-all group flex items-center"
-                        >
-                          <span className="text-gray-300 font-normal text-[14px] group-hover:text-white group-hover:translate-x-1 transition-all">
-                            {subItem.title}
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
-                  </motion.div>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                    <title>Seta</title>
+                  </svg>
                 )}
-              </AnimatePresence>
-            )}
-          </div>
-        ))}
+                <span
+                  className={`absolute bottom-2.5 left-0 h-0.5 rounded-full bg-gradient-to-r from-[#67a7d5] to-[#00D9FF] transition-all duration-300 ${
+                    isRouteActive
+                      ? 'w-full shadow-[0_0_8px_rgba(0,217,255,0.6)]'
+                      : 'w-0 group-hover:w-full'
+                  }`}
+                />
+              </Link>
+
+              {/* Dropdown Menu */}
+              {item.dropdown && (
+                <AnimatePresence>
+                  {activeDropdown === item.name && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2, ease: 'easeOut' }}
+                      className="absolute top-[calc(100%+10px)] left-1/2 -translate-x-1/2 w-[240px] bg-[#010D13]/95 backdrop-blur-xl border border-[#013149] rounded-2xl shadow-[0_20px_50px_rgba(1,66,99,0.3)] overflow-hidden py-3"
+                    >
+                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-[#010D13] border-l border-t border-[#013149] rotate-45" />
+                      <div className="relative z-10 flex flex-col gap-1 px-2">
+                        {item.dropdown.map((subItem) => (
+                          <Link
+                            key={subItem.title}
+                            href={subItem.href}
+                            className="px-4 py-2 hover:bg-[#013149]/50 rounded-xl transition-all group flex items-center justify-between"
+                          >
+                            <span className="text-gray-300 font-normal text-[14px] group-hover:text-white group-hover:translate-x-1 transition-all">
+                              {subItem.title}
+                            </span>
+                            <span className="text-[#00D9FF] opacity-0 group-hover:opacity-100 transition-opacity text-xs">
+                              →
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              )}
+            </div>
+          );
+        })}
       </nav>
 
       {/* Desktop Actions */}
@@ -263,11 +300,11 @@ export function SiteHeader() {
           >
             <span className="flex items-center">
               {currentLang === 'PT' ? (
-                <Flag code="BR" className="w-5 h-4 rounded-sm object-cover flex-shrink-0" />
+                <CountryFlag code="BR" className="w-5 h-3.5 rounded-xs object-cover shrink-0" />
               ) : currentLang === 'EN' ? (
-                <Flag code="US" className="w-5 h-4 rounded-sm object-cover flex-shrink-0" />
+                <CountryFlag code="US" className="w-5 h-3.5 rounded-xs object-cover shrink-0" />
               ) : (
-                <Flag code="ES" className="w-5 h-4 rounded-sm object-cover flex-shrink-0" />
+                <CountryFlag code="ES" className="w-5 h-3.5 rounded-xs object-cover shrink-0" />
               )}
             </span>
             <span>{currentLang}</span>
@@ -289,7 +326,8 @@ export function SiteHeader() {
                   }}
                   className="flex items-center gap-2 px-4 py-2 hover:bg-white/5 text-white text-sm transition-colors text-left"
                 >
-                  <Flag code="BR" className="w-5 h-4 rounded-sm object-cover flex-shrink-0" /> PT
+                  <CountryFlag code="BR" className="w-5 h-3.5 rounded-xs object-cover shrink-0" />{' '}
+                  PT
                 </button>
                 <button
                   type="button"
@@ -299,7 +337,8 @@ export function SiteHeader() {
                   }}
                   className="flex items-center gap-2 px-4 py-2 hover:bg-white/5 text-white text-sm transition-colors text-left"
                 >
-                  <Flag code="US" className="w-5 h-4 rounded-sm object-cover flex-shrink-0" /> EN
+                  <CountryFlag code="US" className="w-5 h-3.5 rounded-xs object-cover shrink-0" />{' '}
+                  EN
                 </button>
                 <button
                   type="button"
@@ -309,7 +348,8 @@ export function SiteHeader() {
                   }}
                   className="flex items-center gap-2 px-4 py-2 hover:bg-white/5 text-white text-sm transition-colors text-left"
                 >
-                  <Flag code="ES" className="w-5 h-4 rounded-sm object-cover flex-shrink-0" /> ES
+                  <CountryFlag code="ES" className="w-5 h-3.5 rounded-xs object-cover shrink-0" />{' '}
+                  ES
                 </button>
               </motion.div>
             )}
@@ -319,7 +359,7 @@ export function SiteHeader() {
         {/* CTA Button */}
         <Link
           href="/login"
-          className="flex items-center justify-center px-6 py-2 bg-gradient-to-r from-[#013149] to-[#000d13] text-white rounded-full font-roboto font-normal text-sm tracking-[0.48px] border border-white/10 hover:shadow-[inset_0_0_20px_rgba(103,167,213,0.5)] hover:border-[#67a7d5]/60 hover:brightness-110 transition-all"
+          className="flex items-center justify-center px-6 py-2 bg-gradient-to-r from-[#013149] to-[#000d13] text-white rounded-full font-roboto font-normal text-sm tracking-[0.48px] border border-white/10 hover:shadow-[inset_0_0_20px_rgba(103,167,213,0.5)] hover:border-[#67a7d5]/60 hover:brightness-110 transition-all whitespace-nowrap"
         >
           {uiTranslations[currentLang].login}
         </Link>
@@ -398,21 +438,24 @@ export function SiteHeader() {
                     onClick={() => setCurrentLang('PT')}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm ${currentLang === 'PT' ? 'bg-[#013149] border-[#67a7d5] text-white' : 'border-white/10 text-gray-400'}`}
                   >
-                    <Flag code="BR" className="w-5 h-4 rounded-sm object-cover flex-shrink-0" /> PT
+                    <CountryFlag code="BR" className="w-5 h-3.5 rounded-xs object-cover shrink-0" />{' '}
+                    PT
                   </button>
                   <button
                     type="button"
                     onClick={() => setCurrentLang('EN')}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm ${currentLang === 'EN' ? 'bg-[#013149] border-[#67a7d5] text-white' : 'border-white/10 text-gray-400'}`}
                   >
-                    <Flag code="US" className="w-5 h-4 rounded-sm object-cover flex-shrink-0" /> EN
+                    <CountryFlag code="US" className="w-5 h-3.5 rounded-xs object-cover shrink-0" />{' '}
+                    EN
                   </button>
                   <button
                     type="button"
                     onClick={() => setCurrentLang('ES')}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm ${currentLang === 'ES' ? 'bg-[#013149] border-[#67a7d5] text-white' : 'border-white/10 text-gray-400'}`}
                   >
-                    <Flag code="ES" className="w-5 h-4 rounded-sm object-cover flex-shrink-0" /> ES
+                    <CountryFlag code="ES" className="w-5 h-3.5 rounded-xs object-cover shrink-0" />{' '}
+                    ES
                   </button>
                 </div>
               </div>

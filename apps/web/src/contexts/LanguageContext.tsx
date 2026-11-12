@@ -27,7 +27,6 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
   const setLang = (newLang: Lang) => {
     setLangState(newLang);
     localStorage.setItem('skyx-lang', newLang);
-    window.location.reload();
   };
 
   return <LanguageContext.Provider value={{ lang, setLang }}>{children}</LanguageContext.Provider>;

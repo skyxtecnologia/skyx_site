@@ -1,7 +1,9 @@
 'use client';
 
+import { SpotlightCard } from '@/components/ui';
 import { type Variants, animate, motion, useInView } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import { useEffect, useRef } from 'react';
 
 const translations = {
   PT: {
@@ -15,12 +17,19 @@ const translations = {
     impactDesc: 'Números que comprovam nossa excelência em tecnologia e imersão.',
     stats: [
       {
-        label: 'Pessoas Imersas',
-        sub: 'Experimentaram nossa Cápsula de VR',
-        value: 3000,
+        label: 'PESSOAS IMERSAS',
+        sub: 'Em nossa tecnologia',
+        value: 65,
         suffix: '+',
+        unit: ' mil',
       },
-      { label: 'Anos de Inovação', sub: 'Construindo o futuro com solidez', value: 2, suffix: '' },
+      {
+        label: 'ANOS DE INOVAÇÃO',
+        sub: 'Construindo o futuro com solidez',
+        value: 2,
+        suffix: '+',
+        unit: '',
+      },
     ],
     values: [
       {
@@ -99,8 +108,20 @@ const translations = {
     impactTitle: 'Our Impact',
     impactDesc: 'Numbers that prove our excellence in technology and immersion.',
     stats: [
-      { label: 'Immersed People', sub: 'Experienced our VR Capsule', value: 3000, suffix: '+' },
-      { label: 'Years of Innovation', sub: 'Building the future solidly', value: 2, suffix: '' },
+      {
+        label: 'IMMERSED PEOPLE',
+        sub: 'In our technology',
+        value: 65,
+        suffix: '+',
+        unit: 'k',
+      },
+      {
+        label: 'YEARS OF INNOVATION',
+        sub: 'Building the future solidly',
+        value: 2,
+        suffix: '+',
+        unit: '',
+      },
     ],
     values: [
       {
@@ -180,16 +201,18 @@ const translations = {
     impactDesc: 'Números que prueban nuestra excelencia en tecnología e inmersión.',
     stats: [
       {
-        label: 'Personas Inmersas',
-        sub: 'Experimentaron nuestra Cápsula de VR',
-        value: 3000,
+        label: 'PERSONAS INMERSAS',
+        sub: 'En nuestra tecnología',
+        value: 65,
         suffix: '+',
+        unit: ' mil',
       },
       {
-        label: 'Años de Innovación',
+        label: 'AÑOS DE INNOVACIÓN',
         sub: 'Construyendo el futuro con solidez',
         value: 2,
-        suffix: '',
+        suffix: '+',
+        unit: '',
       },
     ],
     values: [
@@ -261,25 +284,42 @@ const translations = {
   },
 };
 
-function AnimatedNumber({ value, suffix = '', darkMode = false }: { value: number; suffix?: string; darkMode?: boolean }) {
+function AnimatedNumber({
+  value,
+  suffix = '',
+  unit = '',
+  darkMode = false,
+}: {
+  value: number;
+  suffix?: string;
+  unit?: string;
+  darkMode?: boolean;
+}) {
   const ref = useRef<HTMLHeadingElement>(null);
-  const inView = useInView(ref, { once: false, margin: '-50px' });
-  const [displayValue, setDisplayValue] = useState(0);
+  const inView = useInView(ref, { once: true, amount: 0.1 });
 
   useEffect(() => {
-    if (inView) {
+    if (inView && ref.current) {
+      const element = ref.current;
+      const duration = value <= 5 ? 1.0 : 1.5;
       const controls = animate(0, value, {
-        duration: 2,
-        ease: 'easeOut',
-        onUpdate: (val) => setDisplayValue(Math.floor(val)),
+        duration,
+        ease: value <= 5 ? 'easeOut' : [0.16, 1, 0.3, 1],
+        onUpdate: (val) => {
+          const rounded = Math.round(val);
+          element.textContent = suffix === '+' ? `+${rounded}${unit}` : `${rounded}${unit}`;
+        },
       });
       return controls.stop;
     }
-  }, [inView, value]);
+  }, [inView, value, suffix, unit]);
 
   return (
-    <h3 ref={ref} className={`text-5xl md:text-6xl font-zen-dots mb-2 drop-shadow-sm ${darkMode ? 'text-white' : 'text-[#014263]'}`}>
-      {suffix === '+' ? `+${displayValue}` : displayValue}
+    <h3
+      ref={ref}
+      className={`text-3xl md:text-4xl font-zen-dots mb-1.5 drop-shadow-sm ${darkMode ? 'text-white' : 'text-[#014263]'}`}
+    >
+      {suffix === '+' ? `+0${unit}` : `0${unit}`}
     </h3>
   );
 }
@@ -290,140 +330,194 @@ interface AboutSectionProps {
 
 export function AboutSection({ lang = 'PT' }: AboutSectionProps) {
   const t = translations[lang];
+  const trajectoryCta =
+    lang === 'EN'
+      ? 'Explore our journey'
+      : lang === 'ES'
+        ? 'Conocer nuestra trayectoria'
+        : 'Conhecer nossa trajetória';
 
   const fadeInUp: Variants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } },
+    hidden: { opacity: 0, y: 28 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } },
   };
 
   const staggerContainer: Variants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.15 } },
+    visible: { opacity: 1, transition: { staggerChildren: 0.12 } },
+  };
+
+  const stat0 = t.stats[0] ?? {
+    label: 'PESSOAS IMERSAS',
+    sub: 'Em nossa tecnologia',
+    value: 65,
+    suffix: '+',
+    unit: ' mil',
+  };
+  const stat1 = t.stats[1] ?? {
+    label: 'ANOS DE INOVAÇÃO',
+    sub: 'Construindo o futuro com solidez',
+    value: 2,
+    suffix: '+',
+    unit: '',
   };
 
   return (
     <section
       id="sobre"
-      className="relative w-full min-h-screen bg-white py-24 md:py-32 overflow-hidden flex flex-col justify-center"
+      className="relative w-full bg-white py-[55px] md:py-[89px] lg:py-[110px] overflow-hidden flex flex-col justify-center"
     >
-      {/* Decorative background elements */}
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-br from-[#f8faff] to-[#f0f4ff] rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 opacity-60 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-[#eef2fc] to-white rounded-full blur-[100px] translate-y-1/3 -translate-x-1/3 opacity-60 pointer-events-none" />
+      {/* Decorative background elements (Smooth GPU-composited radial gradients) */}
+      <div
+        className="absolute top-0 right-0 w-[800px] h-[800px] -translate-y-1/2 translate-x-1/3 opacity-50 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(circle, #e6f0fa 0%, rgba(240, 244, 255, 0.4) 40%, transparent 70%)',
+        }}
+      />
+      <div
+        className="absolute bottom-0 left-0 w-[600px] h-[600px] translate-y-1/3 -translate-x-1/3 opacity-50 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(circle, #eef2fc 0%, rgba(255, 255, 255, 0.4) 40%, transparent 70%)',
+        }}
+      />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
-        {/* Intro & History Area */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 mb-24 items-center">
+        {/* Top Asymmetric Bento (Editorial Left + Framed Showcase with Overlapping Metric Cards Right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-[34px] lg:gap-[55px] mb-[68px] md:mb-[110px] items-center">
+          {/* Left Column: Editorial Story */}
           <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: false, margin: '-100px' }}
+            viewport={{ once: true, amount: 0.2 }}
             variants={fadeInUp}
-            className="flex flex-col gap-6"
+            className="lg:col-span-6 flex flex-col gap-[21px]"
           >
-            <div className="inline-block px-4 py-1.5 rounded-full bg-blue-50/80 border border-blue-100 self-start">
-              <span className="text-xs font-roboto font-medium tracking-widest text-[#014263] uppercase">
-                Sobre a SkyX
-              </span>
-            </div>
-
-            <h2 className="font-zen-dots text-3xl md:text-4xl lg:text-5xl text-[#014263] leading-tight">
+            <h2
+              className="font-zen-dots text-[#014263] text-balance"
+              style={{
+                fontSize: 'clamp(1.618rem, 3.5vw, 2.618rem)',
+                lineHeight: 1.22,
+              }}
+            >
               {t.title}
             </h2>
 
-            <p className="text-lg md:text-xl text-gray-600 font-roboto font-light leading-relaxed">
+            <p className="text-base md:text-lg text-[#334155] font-roboto font-normal leading-relaxed">
               {t.intro}
             </p>
+
+            <div className="border-l-2 border-[#014263] pl-5 py-1">
+              <p className="text-sm md:text-base text-[#475569] font-roboto font-light leading-relaxed">
+                {t.history}
+              </p>
+            </div>
+
+            {/* Botão no Estilo Oficial SkyX (sem ícone "correto") */}
+            <div className="pt-2">
+              <Link
+                href="/empresa"
+                className="inline-flex items-center justify-center px-7 py-3.5 rounded-xl bg-gradient-to-r from-[#013149] to-[#000d13] text-white border border-white/10 font-roboto font-normal text-sm md:text-base tracking-wide hover:shadow-[inset_0_0_20px_rgba(103,167,213,0.5)] hover:border-[#67a7d5]/60 hover:brightness-110 transition-all duration-300"
+              >
+                {trajectoryCta}
+              </Link>
+            </div>
           </motion.div>
 
+          {/* Right Column: Framed Showcase + Overlapping Metric Cards */}
           <motion.div
+            id="impacto"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: false, margin: '-100px' }}
+            viewport={{ once: true, amount: 0.2 }}
             variants={fadeInUp}
-            className="bg-[#010D13] p-8 rounded-[2rem] border border-[#013149] shadow-2xl relative"
+            className="lg:col-span-6 relative scroll-mt-28 py-4 md:py-8"
           >
-            {/* Subtle quotation or accent mark */}
-            <div className="absolute -top-5 -left-5 w-10 h-10 bg-[#00d9ff] rounded-xl flex items-center justify-center rotate-12 shadow-lg">
-              <svg className="w-5 h-5 text-[#010D13]" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                <title>Quotation mark</title>
-              </svg>
+            {/* Central Framed Visual Panel with Contextual SkyX VR Capsule */}
+            <div className="rounded-2xl overflow-hidden bg-[#011420] min-h-[390px] md:min-h-[440px] relative shadow-[0_20px_50px_rgba(1,49,73,0.16)] border border-[#013149]/40 group">
+              {/* Contextual SkyX VR Capsule Image — Bright, Crisp & Seamless */}
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                style={{ backgroundImage: "url('/img/card_case_1.png')" }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#010D13]/30 to-transparent pointer-events-none" />
             </div>
-            <p className="text-base md:text-lg text-gray-300 font-roboto font-light leading-relaxed">
-              {t.history}
-            </p>
+
+            {/* Floating Metric Card 1 (Top Right — Soft Ice Tint, Proportional Radius) */}
+            <div className="bg-[#f0f7ff] rounded-xl p-5 shadow-[0_15px_40px_rgba(1,66,99,0.12)] border border-[#67a7d5]/25 md:w-[260px] relative md:absolute md:-top-2 md:-right-4 z-20 mt-4 md:mt-0">
+              <AnimatedNumber
+                value={stat0.value}
+                suffix={stat0.suffix}
+                unit={stat0.unit}
+                darkMode={false}
+              />
+              <p className="text-base md:text-lg text-[#014263] font-roboto-condensed font-bold uppercase tracking-wide mt-1 mb-0.5">
+                {stat0.label}
+              </p>
+              <p className="text-xs md:text-sm text-[#475569] font-roboto font-normal">
+                {stat0.sub}
+              </p>
+            </div>
+
+            {/* Floating Metric Card 2 (Bottom Left — Deep Glass Dark, Proportional Radius) */}
+            <div className="bg-[#010D13]/95 backdrop-blur-xl rounded-xl p-5 shadow-[0_15px_40px_rgba(1,13,19,0.35)] border border-[#013149] md:w-[260px] relative md:absolute md:-bottom-2 md:left-6 z-20 mt-4 md:mt-0">
+              <AnimatedNumber value={stat1.value} suffix="+" unit={stat1.unit} darkMode={true} />
+              <p className="text-base md:text-lg text-[#67a7d5] font-roboto-condensed font-bold uppercase tracking-wide mt-1 mb-0.5">
+                {stat1.label}
+              </p>
+              <p className="text-xs md:text-sm text-gray-300 font-roboto font-light">{stat1.sub}</p>
+            </div>
           </motion.div>
         </div>
-
-        {/* Impact Area (Integrated into About) */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, margin: '-50px' }}
-          variants={fadeInUp}
-          className="mb-24 bg-gradient-to-br from-[#010D13] to-[#013149] border border-[#67a7d5]/20 rounded-3xl p-8 md:p-12 shadow-[0_20px_40px_rgba(1,66,99,0.15)] relative overflow-hidden"
-        >
-          {/* Decorative light reflection on dark card */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#00d9ff]/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-
-          <div className="text-center mb-10 relative z-10">
-            <h3 className="font-zen-dots text-2xl md:text-3xl text-white mb-2">
-              {t.impactTitle}
-            </h3>
-            <p className="text-gray-300 font-roboto font-light text-sm md:text-base">
-              {t.impactDesc}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 relative z-10">
-            {t.stats.map((stat, idx) => (
-              <div key={stat.label} className="flex flex-col items-center text-center">
-                <AnimatedNumber value={stat.value} suffix={stat.suffix} darkMode={true} />
-                <p className="text-lg md:text-xl text-[#67a7d5] font-roboto font-medium mb-1">
-                  {stat.label}
-                </p>
-                <p className="text-sm text-gray-400 font-roboto font-light">{stat.sub}</p>
-              </div>
-            ))}
-          </div>
-        </motion.div>
 
         {/* Values Area */}
         <div>
           <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: false }}
+            viewport={{ once: true, amount: 0.2 }}
             variants={fadeInUp}
-            className="text-center mb-12"
+            className="text-center mb-[34px] md:mb-[55px] flex flex-col items-center"
           >
-            <h3 className="font-zen-dots text-2xl md:text-3xl text-[#014263]">{t.valuesTitle}</h3>
+            <h3
+              className="font-zen-dots text-[#014263]"
+              style={{
+                fontSize: 'clamp(1.618rem, 3.5vw, 2.618rem)',
+                lineHeight: 1.22,
+              }}
+            >
+              {t.valuesTitle}
+            </h3>
           </motion.div>
 
           <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: false, margin: '-50px' }}
+            viewport={{ once: true, amount: 0.2 }}
             variants={staggerContainer}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[21px]"
           >
-            {t.values.map((value, idx) => (
+            {t.values.map((value) => (
               <motion.div
                 key={value.title}
                 variants={fadeInUp}
-                whileHover={{ y: -5, boxShadow: '0 20px 40px -10px rgba(1,66,99,0.2)' }}
-                className="bg-[#010D13] p-6 md:p-8 rounded-3xl border border-[#013149] shadow-2xl flex flex-col items-center text-center transition-all duration-300 relative overflow-hidden group"
+                whileHover={{ y: -5 }}
+                className="h-full"
               >
-                {/* Hover Glow Effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#013149]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-                <div className="w-14 h-14 rounded-2xl bg-[#013149] text-[#00d9ff] flex items-center justify-center mb-5 relative z-10">
-                  {value.icon}
-                </div>
-                <h4 className="font-zen-dots text-lg text-white mb-3 relative z-10">{value.title}</h4>
-                <p className="text-gray-400 font-roboto font-light text-sm leading-relaxed relative z-10">
-                  {value.description}
-                </p>
+                <SpotlightCard className="bg-[#010D13] p-[22px] md:p-[26px] rounded-xl border border-[#013149] hover:border-[#67a7d5]/60 shadow-xl flex flex-col items-start text-left transition-all duration-300 h-full">
+                  <div className="w-full flex items-center justify-start mb-5 relative z-20">
+                    <div className="w-12 h-12 rounded-lg bg-[#013149] border border-[#67a7d5]/25 text-[#00d9ff] flex items-center justify-center">
+                      {value.icon}
+                    </div>
+                  </div>
+                  <h4 className="font-zen-dots text-lg text-white mb-3 relative z-20">
+                    {value.title}
+                  </h4>
+                  <p className="text-gray-400 font-roboto font-light text-sm leading-relaxed relative z-20">
+                    {value.description}
+                  </p>
+                </SpotlightCard>
               </motion.div>
             ))}
           </motion.div>

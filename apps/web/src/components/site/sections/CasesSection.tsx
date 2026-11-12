@@ -330,7 +330,7 @@ export function CasesSection({ lang = 'PT' }: CasesSectionProps) {
               src="/img/card_case_4.png"
               alt={t.cards[3].alt}
               fill
-              className="object-cover transition-transform duration-700 group-hover:scale-110"
+              className="object-cover object-[center_20%] transition-transform duration-700 group-hover:scale-110"
               unoptimized
             />
             <div

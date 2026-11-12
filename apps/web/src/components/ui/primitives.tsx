@@ -1,7 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import type { ReactNode } from 'react';
+import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
+import { type MouseEvent, type ReactNode, useRef } from 'react';
 
 interface AnimatedContainerProps {
   children: ReactNode;
@@ -52,5 +52,54 @@ export function GlowButton({
         {children}
       </Comp>
     </motion.div>
+  );
+}
+
+interface SpotlightCardProps {
+  children: ReactNode;
+  className?: string;
+  spotlightColor?: string;
+}
+
+export function SpotlightCard({
+  children,
+  className = '',
+  spotlightColor = 'rgba(103, 167, 213, 0.18)',
+}: SpotlightCardProps) {
+  const mouseX = useMotionValue(-500);
+  const mouseY = useMotionValue(-500);
+  const rectRef = useRef<DOMRect | null>(null);
+
+  function handleMouseEnter(e: MouseEvent<HTMLDivElement>) {
+    rectRef.current = e.currentTarget.getBoundingClientRect();
+  }
+
+  function handleMouseMove(e: MouseEvent<HTMLDivElement>) {
+    if (!rectRef.current) {
+      rectRef.current = e.currentTarget.getBoundingClientRect();
+    }
+    mouseX.set(e.clientX - rectRef.current.left);
+    mouseY.set(e.clientY - rectRef.current.top);
+  }
+
+  function handleMouseLeave() {
+    rectRef.current = null;
+  }
+
+  return (
+    <div
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className={`group relative overflow-hidden ${className}`}
+    >
+      <motion.div
+        className="pointer-events-none absolute -inset-px rounded-[inherit] opacity-0 transition duration-300 group-hover:opacity-100 z-10"
+        style={{
+          background: useMotionTemplate`radial-gradient(420px circle at ${mouseX}px ${mouseY}px, ${spotlightColor}, transparent 80%)`,
+        }}
+      />
+      {children}
+    </div>
   );
 }
